@@ -48,29 +48,34 @@
       </a>
 
       <nav id="navmenu" class="navmenu">
-                    <ul>
-                        <li><a href="index.html" class="active">Home</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li class="dropdown">
-                            <a href="#"><span>Tài khoản</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                            <ul>
-                                <!-- Nếu chưa đăng nhập -->
-                                <li><a href="login.html" class="auth-item" data-auth="guest">Login</a></li>
-                                <li><a href="register.html" class="auth-item" data-auth="guest">Register</a></li>
-
-                                <!-- Nếu đã đăng nhập -->
-                                <li><a href="#" class="auth-item" data-auth="user">Xin chào, <span id="username">User</span></a></li>
-                                <li><a href="logout" class="auth-item" data-auth="user">Logout</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-                </nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html" class="active">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="team.html">Team</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="#">Dropdown 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="#">Deep Dropdown 1</a></li>
+                  <li><a href="#">Deep Dropdown 2</a></li>
+                  <li><a href="#">Deep Dropdown 3</a></li>
+                  <li><a href="#">Deep Dropdown 4</a></li>
+                  <li><a href="#">Deep Dropdown 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Dropdown 2</a></li>
+              <li><a href="#">Dropdown 3</a></li>
+              <li><a href="#">Dropdown 4</a></li>
+            </ul>
+          </li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
 
     </div>
   </header>
