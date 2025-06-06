@@ -65,12 +65,12 @@
                 <h2>Login</h2>
                 <div th:if="${error}" class="error" th:text="${error}"></div>
                 <div th:if="${message}" class="message" th:text="${message}"></div>
-                <form action="/Web_Event_Online/login.html" method="post">
+                <form action="/EventWeb/login.html" method="post">
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="password" name="password" placeholder="Password" required>
                     <button type="submit">Login</button>
                 </form>
-                <p style="text-align: center;">Don't have an account? <a href="/Web_Event_Online/register.html">Register here</a></p>
+                <p style="text-align: center;">Don't have an account? <a href="/EventWeb/register.html">Register here</a></p>
             </section>
         </main>
 
