@@ -100,6 +100,15 @@ public class User {
         this.ngonNgu = ngonNgu;
         this.vaiTro = vaiTro;
     }
+    public User(String hoTen, String email, String matKhauMaHoa, String soDienThoai) {
+    this.hoTen = hoTen;
+    this.email = email;
+    this.matKhauMaHoa = matKhauMaHoa;
+    this.soDienThoai = soDienThoai;
+    this.xacThuc = false;
+    this.vaiTro = "nguoi_tham_gia";
+    this.ngonNgu = "vi";
+}
 
     @Override
     public String toString() {
