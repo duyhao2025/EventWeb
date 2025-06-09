@@ -35,6 +35,7 @@
         <div class="container-fluid" id="wrapper">
             <div class="row newsfeed-size">
                 <div class="col-md-12 newsfeed-right-side">
+
                     <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
                         <div class="w-100 justify-content-md-center">
                             <ul class="nav navbar-nav enable-mobile px-2">
@@ -435,16 +436,16 @@
                                     <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm" aria-labelledby="settings-dropdown">
                                         <a class="dropdown-item" href="#">
                                             <img src="assets/images/icons/navbar/help.png" alt="Navbar icon"> Help Center</a>
-                                        <a class="dropdown-item d-flex align-items-center dark-mode" onClick="event.stopPropagation();" href="#">
-                                            <img src="assets/images/icons/navbar/moon.png" alt="Navbar icon"> Dark Mode
-                                            <button type="button" class="btn btn-lg btn-toggle ml-auto" data-toggle="button" aria-pressed="false" autocomplete="off">
-                                                <div class="handle"></div>
-                                            </button>
+                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/settings-password">
+                                            <i class="ni ni-settings"></i> Đổi mật khẩu
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
+                                            <i class="ni ni-user-run"></i> Đăng xuất
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <img src="assets/images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
-                                        <a class="dropdown-item logout-btn" href="#">
-                                            <img src="assets/images/icons/navbar/logout.png" alt="Navbar icon"> Log Out</a>
+
                                     </div>
                                 </li>
                                 <button type="button" class="btn nav-link" id="menu-toggle"><img src="assets/images/icons/theme/navs.png" alt="Navbar navs"></button>
@@ -1456,10 +1457,10 @@
         <!-- Optional -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script type="text/javascript">
-                                            $("#menu-toggle").click(function (e) {
-                                                e.preventDefault();
-                                                $("#wrapper").toggleClass("toggled");
-                                            });
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
 
         </script>
         <script src="assets/js/app.js"></script>

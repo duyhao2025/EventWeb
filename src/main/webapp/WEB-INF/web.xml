@@ -3,7 +3,8 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-
+    <!-- SMTP settings for JavaMail -->
+    
     <!-- Spring Dispatcher Servlet -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
@@ -14,7 +15,7 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
+    
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>

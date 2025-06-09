@@ -22,7 +22,12 @@
             <artifactId>spring-webmvc</artifactId>
             <version>5.3.33</version>
         </dependency>
-
+        <!--        JavaMail-->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
         <!-- Spring Data JPA -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -86,7 +91,12 @@
             <artifactId>thymeleaf-spring5</artifactId>
             <version>3.1.2.RELEASE</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+            <type>jar</type>
+        </dependency>
         <!-- Hibernate Validator (tùy chọn) -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -109,6 +119,7 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+        
     </dependencies>
 
     <build>

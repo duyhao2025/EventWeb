@@ -25,8 +25,8 @@ public class UserController {
     // GET: Hiển thị form đăng nhập
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "error", required = false) String error,
-                                 @RequestParam(value = "registered", required = false) String registered,
-                                 Model model) {
+            @RequestParam(value = "registered", required = false) String registered,
+            Model model) {
         if (error != null) {
             model.addAttribute("error", error);
         }
@@ -39,15 +39,15 @@ public class UserController {
     // POST: Xử lý đăng nhập
     @PostMapping("/login")
     public String processLogin(@RequestParam("email") String email,
-                               @RequestParam("mat_khau") String password,
-                               HttpSession session,
-                               RedirectAttributes redirectAttributes) {
+            @RequestParam("mat_khau") String password,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(email);
         if (user != null) {
             String hashedInput = HashUtil.sha256(password);
             if (hashedInput.equalsIgnoreCase(user.getMatKhauMaHoa())) {
                 session.setAttribute("user", user);
-                return "redirect:/";
+                return "redirect:/demo";
             }
         }
         String msg = URLEncoder.encode("Sai email hoặc mật khẩu.", StandardCharsets.UTF_8);
@@ -57,7 +57,7 @@ public class UserController {
     // GET: Hiển thị form đăng ký
     @GetMapping("/register")
     public String showRegisterForm(@RequestParam(value = "error", required = false) String error,
-                                   Model model) {
+            Model model) {
         if (error != null) {
             model.addAttribute("error", error);
         }
@@ -67,10 +67,10 @@ public class UserController {
     // POST: Xử lý đăng ký
     @PostMapping("/register")
     public String processRegister(@RequestParam("ho_ten") String hoTen,
-                                   @RequestParam("email") String email,
-                                   @RequestParam("mat_khau") String password,
-                                   @RequestParam("so_dien_thoai") String phone,
-                                   RedirectAttributes redirectAttributes) {
+            @RequestParam("email") String email,
+            @RequestParam("mat_khau") String password,
+            @RequestParam("so_dien_thoai") String phone,
+            RedirectAttributes redirectAttributes) {
         try {
             boolean success = userService.registerUser(hoTen, email, password, phone);
             if (success) {
@@ -85,13 +85,6 @@ public class UserController {
         }
     }
 
-    // GET: Đăng xuất
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
-
     // GET: API trả về tên người dùng hiện tại (cho AJAX)
     @GetMapping("/get-username")
     public void getUsername(HttpSession session, HttpServletResponse response) throws IOException {
@@ -104,5 +97,13 @@ public class UserController {
         PrintWriter out = response.getWriter();
         out.print(name);
         out.flush();
+    }
+
+    
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }
