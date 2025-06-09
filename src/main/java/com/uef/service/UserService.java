@@ -5,6 +5,7 @@
 package com.uef.service;
 
 import com.uef.model.User;
+import java.util.List;
 
 /**
  *
@@ -12,5 +13,11 @@ import com.uef.model.User;
  */
 public interface UserService {
     User findByEmail(String email);
+    void eventRegisterUser(String hoTen, String email, String matKhau, String vaiTro);
     boolean registerUser(String hoTen, String email, String password, String soDienThoai);
+    void save(User user);
+    List<User> getAllUsers();
+
+    int countRegisteredUsers();
+    void saveEventRegistration(String email, String fullName, String phone, String code);
 }
