@@ -58,9 +58,7 @@
                                     <input type="password" class="form-control" name="mat_khau" placeholder="Password" required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-3">
-                                <a href="#">Quên mật khẩu?</a>
-                            </div>
+
                             <div class="col-md-6">
                                 <label class="custom-control material-checkbox">
                                     <input type="checkbox" class="material-control-input">
@@ -76,6 +74,9 @@
                             <div class="col-md-12 text-center mt-5">
                                 <span class="go-login">Chưa có tài khoản? <a href="${pageContext.request.contextPath}/register">Đăng ký</a></span>
                             </div>
+                            <p class="text-sm">
+                                <a href="${pageContext.request.contextPath}/forgotEmail">Quên mật khẩu?</a>
+                            </p>
                         </div>
                     </form>
                 </div>
@@ -85,7 +86,7 @@
                 <div class="auth-left-content mt-5 mb-5 text-center">
                     <div class="weather-small text-white">
                         <p class="current-weather"><i class='bx bx-sun'></i> <span>14&deg;</span></p>
-                        <p class="weather-city">Gyumri</p>
+                        <p class="weather-city">Hồ Chí Minh</p>
                     </div>
                     <div class="text-white mt-5 mb-5">
                         <h2 class="create-account mb-3">Chào mừng trở lại</h2>

@@ -11,6 +11,10 @@ import com.uef.model.User;
  * @author PC
  */
 public interface UserService {
+
     User findByEmail(String email);
-    boolean registerUser(String hoTen, String email, String password, String soDienThoai);
+
+     boolean registerUser(String hoTen, String email, String password, String soDienThoai);
+    User login(String email, String password);
+
 }

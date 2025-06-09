@@ -4,7 +4,10 @@
  */
 package com.uef.controller;
 
+import com.uef.model.User;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -13,9 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class HomeController {
-    @GetMapping("/demo")
-    public String showDemoPage() {
-        return "demo/index"; // maps to /WEB-INF/views/demo/index.jsp
+
+    @GetMapping({"/", "/demo"})
+    public String showDemo(HttpSession session, Model model) {
+        // Đẩy thông tin user (đã login) vào model để JSP có thể hiện avatar…
+        User u = (User) session.getAttribute("currentUser");
+        model.addAttribute("user", u);
+        return "demo/index";    // ← trỏ tới /WEB-INF/views/demo/index.jsp
     }
 
 }
