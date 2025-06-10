@@ -3,6 +3,7 @@ package com.uef.controller;
 import com.uef.model.User;
 import com.uef.service.UserService;
 import com.uef.until.HashUtil;
+import com.uef.until.QRCodeGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
+@RequestMapping("/")
 public class UserController {
 
     @Autowired
@@ -99,11 +103,48 @@ public class UserController {
         out.flush();
     }
 
-    
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/eventregister")
+    public String showEventRegistrationForm() {
+        return "event/eventregister";
+    }
+
+    // Xử lý form đăng ký tham gia sự kiện
+    @PostMapping("/eventregister")
+    public String processEventRegistration(@RequestParam("hoTen") String hoTen,
+            @RequestParam("email") String email,
+            @RequestParam("soDienThoai") String soDienThoai,
+            Model model,
+            HttpServletRequest request) {
+
+        try {
+            String code = "CONF" + System.currentTimeMillis();
+
+            userService.saveEventRegistration(email, hoTen, soDienThoai, code);
+            userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
+
+            LocalDate expirationDate = LocalDate.now().plusDays(7);
+            String ngayHetHan = expirationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            String qrContent = String.format("Họ tên: %s\nEmail: %s\nSĐT: %s\nMã: %s\nHết hạn: %s",
+                    hoTen, email, soDienThoai, code, ngayHetHan);
+
+            String qrImagePath = QRCodeGenerator.generateQRCodeImage(qrContent, request);
+
+            model.addAttribute("code", code);
+            model.addAttribute("ngayHetHan", ngayHetHan);
+            model.addAttribute("qrImagePath", qrImagePath);
+
+            return "event/success";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Lỗi khi xử lý đăng ký: " + e.getMessage());
+            return "event/eventregister";
+        }
     }
 }

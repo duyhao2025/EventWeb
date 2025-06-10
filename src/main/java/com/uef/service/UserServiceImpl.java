@@ -9,14 +9,16 @@ import com.uef.until.DBConnection;
 import com.uef.until.HashUtil;
 
 import java.sql.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    
+    private static final List<User> userList = new ArrayList<>();
+
     @Override
     public User login(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = ? AND mat_khau_ma_hoa = ?";
@@ -93,7 +95,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     private User mapRow(ResultSet rs) throws SQLException {
         User u = new User();
         u.setMaNguoiDung(rs.getInt("ma_nguoi_dung"));
@@ -104,8 +105,42 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
-   
+    @Override
+    public void eventRegisterUser(String hoTen, String email, String password, String soDienThoai) {
+        if (findByEmail(email) != null) {
+            throw new RuntimeException("Email đã tồn tại. Vui lòng chọn email khác.");
+        }
 
-   
+        User user = new User();
+        user.setHoTen(hoTen);
+        user.setEmail(email);
+        user.setMatKhauMaHoa(HashUtil.sha256(password));
+        user.setVaiTro("");
+        user.setXacThuc(false);
+        user.setNgonNgu("vi");
+
+        userList.add(user);
+    }
+
+    
+    @Override
+    public void save(User user) {
+        userList.add(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userList;
+    }
+
+    @Override
+    public int countRegisteredUsers() {
+        return userList.size();
+    }
+
+    @Override
+    public void saveEventRegistration(String email, String fullName, String phone, String code) {
+        System.out.println("Đăng ký mới: " + fullName + " | " + email + " | " + phone + " | Mã: " + code);
+    }
 
 }
