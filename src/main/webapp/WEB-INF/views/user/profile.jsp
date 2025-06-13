@@ -1,95 +1,119 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<html>
+<!DOCTYPE html>
+<html lang="vi">
     <head>
-        <title>ThÙng tin c· nh‚n</title>
-        <!-- include CSS/JS argon/bootstrap -->
+        <meta charset="UTF-8">
+        <title>Th√¥ng tin c√° nh√¢n</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: 'Inter', 'Segoe UI', sans-serif;
+                background: #eef2f7;
+                margin: 0;
+                padding: 0;
+            }
+            .wrapper {
+                max-width: 600px;
+                margin: 60px auto;
+                background: #ffffff;
+                padding: 40px 48px;
+                border-radius: 16px;
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+            }
+            h2 {
+                margin-top: 0;
+                font-size: 24px;
+                font-weight: 600;
+                color: #1a202c;
+                margin-bottom: 32px;
+                text-align: center;
+            }
+            label {
+                font-weight: 500;
+                color: #2d3748;
+                display: block;
+                margin-bottom: 6px;
+            }
+            input[type="text"],
+            input[type="email"],
+            select {
+                width: 100%;
+                padding: 12px 14px;
+                margin-bottom: 20px;
+                border: 1px solid #cbd5e0;
+                border-radius: 8px;
+                font-size: 15px;
+            }
+            .button-group {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+            }
+            button,
+            .btn-link {
+                padding: 12px 20px;
+                font-size: 15px;
+                font-weight: 600;
+                border-radius: 8px;
+                border: none;
+                cursor: pointer;
+                transition: all 0.25s ease;
+            }
+            button {
+                background-color: #38a169;
+                color: white;
+            }
+            button:hover {
+                background-color: #2f855a;
+            }
+            .btn-link {
+                background-color: #3182ce;
+                color: white;
+                text-decoration: none;
+                display: inline-block;
+                text-align: center;
+            }
+            .btn-link:hover {
+                background-color: #2b6cb0;
+            }
+            .msg {
+                text-align: center;
+                color: #2f855a;
+                margin-bottom: 20px;
+                font-weight: 500;
+            }
+        </style>
     </head>
     <body>
-        <div class="container mt-4">
-            <h2>ThÙng tin c· nh‚n</h2>
-            <ul class="nav nav-tabs" id="profileTabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#tabPersonal">C· nh‚n</a>
-                </li>
-                <li class="nav-item" 
-            <c:if test="${user.vaiTro != 'nguoi_to_chuc'}">style="display:none"</c:if>>
-            <a class="nav-link" data-toggle="tab" href="#tabOrganizer">Ng??i t? ch?c</a>
-            </li>
-        </ul>
 
-        <div class="tab-content mt-3">
-            <!-- Tab C· nh‚n -->
-            <div id="tabPersonal" class="tab-pane fade show active">
-                <form action="${pageContext.request.contextPath}/profile/updatePersonal" method="post">
-                    <div class="form-group">
-                        <label>TÍn</label>
-                        <input name="hoTen" class="form-control" value="${user.hoTen}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input name="email" class="form-control" value="${user.email}" />
-                    </div>
-                    <div class="form-group">
-                        <label>S? ?i?n tho?i</label>
-                        <input class="form-control" value="${user.soDienThoai}" readonly />
-                    </div>
-                    <button class="btn btn-primary">L?u thay ??i</button>
-                </form>
+        <div class="wrapper">
+            <h2>Th√¥ng tin c√° nh√¢n</h2>
 
-                <h5 class="mt-4">C·c s? ki?n ?„ tham gia</h5>
-                <ul class="list-group">
-                    <c:forEach var="e" items="${joinedEvents}">
-                        <li class="list-group-item">
-                            <a href="${pageContext.request.contextPath}/event/${e.maSuKien}">${e.tieuDe}</a>
-                            <span class="text-muted">(<fmt:formatDate value="${e.ngayGio}" pattern="dd/MM/yyyy HH:mm"/>)</span>
-                        </li>
-                    </c:forEach>
-                    <c:if test="${empty joinedEvents}">
-                        <li class="list-group-item text-muted">B?n ch?a tham gia s? ki?n n‡o.</li>
-                    </c:if>
-                </ul>
-            </div>
+            <c:if test="${not empty msg}">
+                <div class="msg">${msg}</div>
+            </c:if>
 
-            <!-- Tab Ng??i t? ch?c -->
-            <div id="tabOrganizer" class="tab-pane fade">
-                <div class="form-group">
-                    <label>TÍn t? ch?c</label>
-                    <input class="form-control" value="${user.hoTen}" readonly />
+            <form action="${pageContext.request.contextPath}/user/profile" method="post">
+                <label for="hoTen">H·ªç t√™n</label>
+                <input type="text" id="hoTen" name="hoTen" value="${user.hoTen}" required />
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="${user.email}" required />
+
+                <label for="soDienThoai">S·ªë ƒëi·ªán tho·∫°i</label>
+                <input type="text" id="soDienThoai" name="soDienThoai" value="${user.soDienThoai}" />
+
+                <div class="button-group">
+                    <button type="submit">C·∫≠p nh·∫≠t</button>
+                    <a href="${pageContext.request.contextPath}/demo" class="btn-link">Quay v·ªÅ trang ch·ªß</a>
                 </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input class="form-control" value="${user.email}" readonly />
-                </div>
-                <div class="form-group">
-                    <label>S?T liÍn l?c</label>
-                    <input class="form-control" 
-                           value="${fn:replace(user.soDienThoai,'^0','+84')}" readonly />
-                </div>
-                <div class="form-group">
-                    <label>?·nh gi· trung bÏnh</label>
-                    <p><strong>${avgRating}</strong> ?</p>
-                </div>
-                <h5 class="mt-4">C·c s? ki?n ?„ t? ch?c</h5>
-                <ul class="list-group">
-                    <c:forEach var="e" items="${organizedEvents}">
-                        <li class="list-group-item">
-                            <a href="${pageContext.request.contextPath}/event/${e.maSuKien}">${e.tieuDe}</a>
-                        </li>
-                    </c:forEach>
-                    <c:if test="${empty organizedEvents}">
-                        <li class="list-group-item text-muted">Ch?a t? ch?c s? ki?n n‡o.</li>
-                    </c:if>
-                </ul>
-            </div>
+            </form>
         </div>
-    </div>
-    <script>
-        // kÌch ho?t Bootstrap tabs n?u c?n
-        $('#profileTabs a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-    </script>
-</body>
+
+    </body>
 </html>

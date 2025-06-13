@@ -425,7 +425,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item s-nav">
-                                    <a href="profile.html" class="nav-link nav-links">
+                                    <a href="profile.jsp" class="nav-link nav-links">
                                         <div class="menu-user-image">
                                             <img src="assets/images/users/user-4.jpg" class="menu-user-img ml-1" alt="Menu Image">
                                         </div>
@@ -434,8 +434,8 @@
                                 <li class="nav-item s-nav nav-icon dropdown">
                                     <a href="settings.html" data-toggle="dropdown" data-placement="bottom" data-title="Settings" class="nav-link settings-link rm-drop-mobile drop-w-tooltip" id="settings-dropdown"><img src="assets/images/icons/navbar/settings.png" class="nav-settings" alt="navbar icon"></a>
                                     <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm" aria-labelledby="settings-dropdown">
-                                        <a class="dropdown-item" href="#">
-                                            <img src="assets/images/icons/navbar/help.png" alt="Navbar icon"> Help Center</a>
+                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/user/profile">
+                                            <img src="assets/images/icons/navbar/notification.png" alt="Navbar icon"> Thông tin cá nhân</a>
                                         <a class="dropdown-item" href="${pageContext.request.contextPath}/settings-password">
                                             <i class="ni ni-settings"></i> Đổi mật khẩu
                                         </a>

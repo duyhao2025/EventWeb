@@ -28,4 +28,13 @@ public interface UserService {
     int countRegisteredUsers();
 
     void saveEventRegistration(String email, String fullName, String phone, String code);
+
+    User getUserById(int id);
+
+    User checkLogin(String email, String pass);
+
+    void updateUser(User user);
+
+    User findById(int id);
+
 }

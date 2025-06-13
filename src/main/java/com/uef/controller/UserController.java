@@ -27,17 +27,12 @@ public class UserController {
     private UserService userService;
 
     // GET: Hiển thị form đăng nhập
-    @GetMapping("/login")
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "registered", required = false) String registered,
-            Model model) {
-        if (error != null) {
-            model.addAttribute("error", error);
-        }
-        if (registered != null) {
-            model.addAttribute("message", "Đăng ký thành công. Bạn có thể đăng nhập.");
-        }
-        return "user/login";
+    @GetMapping("/demo")
+    public String showDemo(HttpSession session, Model model) {
+        // Đẩy thông tin user (đã login) vào model để JSP có thể hiện avatar…
+        User u = (User) session.getAttribute("currentUser");
+        model.addAttribute("user", u);
+        return "demo/index";    // ← trỏ tới /WEB-INF/views/demo/index.jsp
     }
 
     // POST: Xử lý đăng nhập
@@ -51,7 +46,7 @@ public class UserController {
             String hashedInput = HashUtil.sha256(password);
             if (hashedInput.equalsIgnoreCase(user.getMatKhauMaHoa())) {
                 session.setAttribute("user", user);
-                return "redirect:/demo";
+                return "redirect:/demo";  // hoặc "/" tùy yêu cầu
             }
         }
         String msg = URLEncoder.encode("Sai email hoặc mật khẩu.", StandardCharsets.UTF_8);
@@ -146,5 +141,30 @@ public class UserController {
             model.addAttribute("error", "Lỗi khi xử lý đăng ký: " + e.getMessage());
             return "event/eventregister";
         }
+    }
+
+    @GetMapping("/user/profile")
+    public String showProfile(HttpSession session, Model model) {
+        User loggedUser = (User) session.getAttribute("user");
+        if (loggedUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", userService.findById(loggedUser.getMaNguoiDung()));
+        return "user/profile";
+    }
+
+    @PostMapping("/user/profile")
+    public String updateProfile(@ModelAttribute("user") User user, HttpSession session, RedirectAttributes redirectAttributes) {
+        User loggedUser = (User) session.getAttribute("user");
+        if (loggedUser == null) {
+            return "redirect:/login";
+        }
+
+        user.setMaNguoiDung(loggedUser.getMaNguoiDung()); // bảo toàn ID
+        userService.updateUser(user);
+        session.setAttribute("user", userService.findById(user.getMaNguoiDung())); // cập nhật lại session
+
+        redirectAttributes.addFlashAttribute("msg", "Cập nhật thành công!");
+        return "redirect:/user/profile";
     }
 }

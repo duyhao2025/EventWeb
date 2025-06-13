@@ -4,11 +4,10 @@
  */
 package com.uef.controller;
 
-import com.uef.model.User;
-import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -17,12 +16,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping({"/", "/demo"})
-    public String showDemo(HttpSession session, Model model) {
-        // Đẩy thông tin user (đã login) vào model để JSP có thể hiện avatar…
-        User u = (User) session.getAttribute("currentUser");
-        model.addAttribute("user", u);
-        return "demo/index";    // ← trỏ tới /WEB-INF/views/demo/index.jsp
+     @GetMapping({"/","/login"})
+    public String showLoginForm(@RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "registered", required = false) String registered,
+            Model model) {
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+        if (registered != null) {
+            model.addAttribute("message", "Đăng ký thành công. Bạn có thể đăng nhập.");
+        }
+        return "user/login";
     }
 
 }

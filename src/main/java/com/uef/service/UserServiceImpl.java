@@ -11,12 +11,18 @@ import com.uef.until.HashUtil;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private static final List<User> userList = new ArrayList<>();
 
     @Override
@@ -95,6 +101,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User checkLogin(String email, String pass) {
+        String sql = "SELECT * FROM users WHERE email = ? AND mat_khau_ma_hoa = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{email, pass},
+                    new BeanPropertyRowMapper<>(User.class));
+        } catch (EmptyResultDataAccessException e) {
+            return null; // Không tìm thấy user → trả null
+        }
+    }
+
+    @Override
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE ma_nguoi_dung=?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(User.class));
+    }
+
     private User mapRow(ResultSet rs) throws SQLException {
         User u = new User();
         u.setMaNguoiDung(rs.getInt("ma_nguoi_dung"));
@@ -122,7 +145,6 @@ public class UserServiceImpl implements UserService {
         userList.add(user);
     }
 
-    
     @Override
     public void save(User user) {
         userList.add(user);
@@ -143,4 +165,45 @@ public class UserServiceImpl implements UserService {
         System.out.println("Đăng ký mới: " + fullName + " | " + email + " | " + phone + " | Mã: " + code);
     }
 
+    @Override
+    public void updateUser(User user) {
+        String sql = "UPDATE users SET ho_ten=?, email=?, so_dien_thoai=?, ngon_ngu=? WHERE ma_nguoi_dung=?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getHoTen());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getSoDienThoai());
+            stmt.setString(4, user.getNgonNgu());
+            stmt.setInt(5, user.getMaNguoiDung());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public User findById(int id) {
+        String sql = "SELECT * FROM users WHERE ma_nguoi_dung=?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User u = new User();
+                u.setMaNguoiDung(rs.getInt("ma_nguoi_dung"));
+                u.setHoTen(rs.getString("ho_ten"));
+                u.setEmail(rs.getString("email"));
+                u.setSoDienThoai(rs.getString("so_dien_thoai"));
+                u.setNgonNgu(rs.getString("ngon_ngu"));
+                return u;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
