@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 CREATE DATABASE WEB_EVENT
+=======
+﻿CREATE DATABASE WEB_EVENT
+>>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
 GO
 
 USE WEB_EVENT;
@@ -94,4 +98,8 @@ CREATE TABLE NgonNguDaiDien (
     ma_nguoi_dung INT PRIMARY KEY,
     ngon_ngu NVARCHAR(10) CHECK (ngon_ngu IN ('vi', 'en')) DEFAULT 'vi',
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
+<<<<<<< HEAD
 );
+=======
+);
+>>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
