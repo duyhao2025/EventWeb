@@ -4,116 +4,133 @@
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
-        <title>Thông tin cá nhân</title>
+        <title>Thông tin cá nhân & Lịch sử sự kiện</title>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
-            * {
-                box-sizing: border-box;
-            }
             body {
-                font-family: 'Inter', 'Segoe UI', sans-serif;
-                background: #eef2f7;
+                font-family: 'Segoe UI', sans-serif;
+                background: #f3f5f8;
                 margin: 0;
-                padding: 0;
             }
-            .wrapper {
-                max-width: 600px;
-                margin: 60px auto;
-                background: #ffffff;
-                padding: 40px 48px;
-                border-radius: 16px;
-                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+            .container {
+                display: flex;
+                gap: 24px;
+                max-width: 1200px;
+                margin: 50px auto;
+                padding: 0 24px;
+            }
+            .profile-section, .history-section {
+                background: #fff;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            }
+            .profile-section {
+                flex: 1;
+            }
+            .history-section {
+                flex: 2;
             }
             h2 {
                 margin-top: 0;
-                font-size: 24px;
-                font-weight: 600;
-                color: #1a202c;
-                margin-bottom: 32px;
-                text-align: center;
+                font-size: 22px;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 12px;
             }
             label {
                 font-weight: 500;
-                color: #2d3748;
-                display: block;
                 margin-bottom: 6px;
+                display: block;
             }
-            input[type="text"],
-            input[type="email"],
-            select {
+            input, select {
                 width: 100%;
-                padding: 12px 14px;
+                padding: 10px 12px;
                 margin-bottom: 20px;
-                border: 1px solid #cbd5e0;
+                border: 1px solid #ccc;
                 border-radius: 8px;
-                font-size: 15px;
-            }
-            .button-group {
-                display: flex;
-                justify-content: space-between;
-                gap: 12px;
-            }
-            button,
-            .btn-link {
-                padding: 12px 20px;
-                font-size: 15px;
-                font-weight: 600;
-                border-radius: 8px;
-                border: none;
-                cursor: pointer;
-                transition: all 0.25s ease;
             }
             button {
+                width: 100%;
+                padding: 12px;
                 background-color: #38a169;
                 color: white;
+                font-weight: bold;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
             }
             button:hover {
                 background-color: #2f855a;
             }
-            .btn-link {
-                background-color: #3182ce;
-                color: white;
-                text-decoration: none;
-                display: inline-block;
-                text-align: center;
+            .event-card {
+                border: 1px solid #ddd;
+                padding: 16px;
+                border-radius: 10px;
+                margin-bottom: 16px;
             }
-            .btn-link:hover {
-                background-color: #2b6cb0;
+            .event-card h4 {
+                margin: 0 0 8px;
+            }
+            .event-card p {
+                margin: 4px 0;
+                font-size: 14px;
+            }
+            .event-card a {
+                color: #3182ce;
+                text-decoration: none;
+                font-weight: 500;
             }
             .msg {
                 text-align: center;
-                color: #2f855a;
-                margin-bottom: 20px;
-                font-weight: 500;
+                color: green;
+                margin-bottom: 16px;
             }
         </style>
     </head>
     <body>
+        <div class="container">
+            <!-- Profile Form -->
+            <div class="profile-section">
+                <h2>Thông tin cá nhân</h2>
 
-        <div class="wrapper">
-            <h2>Thông tin cá nhân</h2>
+                <c:if test="${not empty msg}">
+                    <div class="msg">${msg}</div>
+                </c:if>
 
-            <c:if test="${not empty msg}">
-                <div class="msg">${msg}</div>
-            </c:if>
+                <form action="${pageContext.request.contextPath}/user/profile" method="post">
+                    <label>Họ tên</label>
+                    <input type="text" name="hoTen" value="${user.hoTen}" required />
 
-            <form action="${pageContext.request.contextPath}/user/profile" method="post">
-                <label for="hoTen">Họ tên</label>
-                <input type="text" id="hoTen" name="hoTen" value="${user.hoTen}" required />
+                    <label>Email</label>
+                    <input type="email" name="email" value="${user.email}" required />
 
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="${user.email}" required />
+                    <label>Số điện thoại</label>
+                    <input type="text" name="soDienThoai" value="${user.soDienThoai}" />
 
-                <label for="soDienThoai">Số điện thoại</label>
-                <input type="text" id="soDienThoai" name="soDienThoai" value="${user.soDienThoai}" />
+                    <label>Ngôn ngữ</label>
+                    <select name="ngonNgu">
+                        <option value="vi" ${user.ngonNgu == 'vi' ? 'selected' : ''}>Tiếng Việt</option>
+                        <option value="en" ${user.ngonNgu == 'en' ? 'selected' : ''}>English</option>
+                    </select>
 
-                <div class="button-group">
                     <button type="submit">Cập nhật</button>
-                    <a href="${pageContext.request.contextPath}/demo" class="btn-link">Quay về trang chủ</a>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
 
+            <!-- Event History -->
+            <div class="history-section">
+                <h2>Lịch sử tham gia sự kiện</h2>
+
+                <c:forEach var="e" items="${events}">
+                    <div class="event-card">
+                        <h4>${e.tieuDe}</h4>
+                        <p>Ngày tổ chức: ${e.ngayGio}</p>
+                        <p>Trạng thái: ${e.trangThai}</p>
+                        <c:if test="${e.trangThai == 'finished' && !e.daDanhGia}">
+                            <a href="${pageContext.request.contextPath}/event/evaluate?suKienId=${e.maSuKien}">Đánh giá sự kiện</a>
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
     </body>
 </html>

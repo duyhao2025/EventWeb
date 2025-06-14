@@ -1,6 +1,9 @@
 package com.uef.controller;
 
+import com.uef.model.SuKien;
 import com.uef.model.User;
+import com.uef.service.DangKyService;
+import com.uef.service.DangKyServiceImpl;
 import com.uef.service.UserService;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
@@ -17,6 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -143,27 +147,36 @@ public class UserController {
         }
     }
 
+    private DangKyService dangKyService = new DangKyServiceImpl();
+
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute("user");
         if (loggedUser == null) {
             return "redirect:/login";
         }
-        model.addAttribute("user", userService.findById(loggedUser.getMaNguoiDung()));
+
+        User user = userService.findById(loggedUser.getMaNguoiDung());
+        model.addAttribute("user", user);
+
+        List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
+        model.addAttribute("events", history);
+
         return "user/profile";
     }
 
     @PostMapping("/user/profile")
-    public String updateProfile(@ModelAttribute("user") User user, HttpSession session, RedirectAttributes redirectAttributes) {
-        User loggedUser = (User) session.getAttribute("user");
-        if (loggedUser == null) {
+    public String updateProfile(@ModelAttribute("user") User user,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
             return "redirect:/login";
         }
 
-        user.setMaNguoiDung(loggedUser.getMaNguoiDung()); // bảo toàn ID
+        user.setMaNguoiDung(sessionUser.getMaNguoiDung());
         userService.updateUser(user);
-        session.setAttribute("user", userService.findById(user.getMaNguoiDung())); // cập nhật lại session
-
+        session.setAttribute("user", userService.findById(user.getMaNguoiDung()));
         redirectAttributes.addFlashAttribute("msg", "Cập nhật thành công!");
         return "redirect:/user/profile";
     }
