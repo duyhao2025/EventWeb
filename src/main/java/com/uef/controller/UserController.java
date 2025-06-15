@@ -101,31 +101,45 @@ public class UserController {
         out.print(name);
         out.flush();
     }
+// Đăng xuất
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
+// Đăng ký tham gia sự kiện
 
     @GetMapping("/eventregister")
-    public String showEventRegistrationForm() {
+    public String showEventRegistrationForm(HttpServletRequest request, Model model) {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("email", user.getEmail());
         return "event/eventregister";
     }
 
-    // Xử lý form đăng ký tham gia sự kiện
     @PostMapping("/eventregister")
-    public String processEventRegistration(@RequestParam("hoTen") String hoTen,
-            @RequestParam("email") String email,
+    public String processEventRegistration(
+            @RequestParam("hoTen") String hoTen,
             @RequestParam("soDienThoai") String soDienThoai,
-            Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Model model) {
 
         try {
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
+                return "redirect:/login";
+            }
+
+            String email = user.getEmail(); // lấy từ session
+
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
-            userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
+           // userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
 
             LocalDate expirationDate = LocalDate.now().plusDays(7);
             String ngayHetHan = expirationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -148,6 +162,7 @@ public class UserController {
     }
 
     private DangKyService dangKyService = new DangKyServiceImpl();
+//Thông tin cá nhân và Xem lịch sử sự kiện
 
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
@@ -164,6 +179,7 @@ public class UserController {
 
         return "user/profile";
     }
+//Thông tin cá nhân và Xem lịch sử sự kiện
 
     @PostMapping("/user/profile")
     public String updateProfile(@ModelAttribute("user") User user,

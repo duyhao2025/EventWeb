@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class DangKyServiceImpl implements DangKyService {
 
+    //Xem lịch sử tham gia
     @Override
     public List<SuKien> getLichSuThamGia(int maNguoiDung) {
         List<SuKien> list = new ArrayList<>();

@@ -31,8 +31,8 @@
                                 <img src="${pageContext.request.contextPath}/assets/images/logo-64x64.png" class="logo-img" alt="Logo">
                             </div>
                             <div class="col-md-10">
-                                <p>Argon Social Network</p>
-                                <span>Design System</span>
+                                <p>Web Event Online</p>
+                                <span>Design By Group 10</span>
                             </div>
                         </div>
                     </div>
@@ -96,15 +96,15 @@
             <div class="col-md-6 auth-bg-image d-flex justify-content-center align-items-center">
                 <div class="auth-left-content mt-5 mb-5 text-center">
                     <div class="weather-small text-white">
-                        <p class="current-weather"><i class='bx bx-sun'></i> <span>14&deg;</span></p>
-                        <p class="weather-city">Gyumri</p>
+                        <p class="current-weather"><i class='bx bx-sun'></i> <span>28&deg;</span></p>
+                        <p class="weather-city">Thành phố Hồ Chí Minh</p>
                     </div>
                     <div class="text-white mt-5 mb-5">
                         <h2 class="create-account mb-3">Tạo tài khoản</h2>
                         <p>Nhập thông tin cá nhân và bắt đầu hành trình với chúng tôi.</p>
                     </div>
                     <div class="auth-quick-links">
-                        <a href="#" class="btn btn-outline-primary">Xem thêm template</a>
+                        <a href="#" class="btn btn-outline-primary">T-D-T-T</a>
                     </div>
                 </div>
             </div>
