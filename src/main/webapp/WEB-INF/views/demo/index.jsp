@@ -41,6 +41,9 @@
                             <ul class="nav navbar-nav enable-mobile px-2">
                                 <li class="nav-item">
                                     <button type="button" class="btn nav-link p-0"><img src="assets/images/icons/theme/post-image.png" class="f-nav-icon" alt="Quick make post"></button>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#modal-create-post">
+                                        <i class="fa fa-pencil"></i> Tạo bài viết
+                                    </button>
                                 </li>
                                 <li class="nav-item w-100 py-2">
                                     <form class="d-inline form-inline w-100 px-4">

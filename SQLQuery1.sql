@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-CREATE DATABASE WEB_EVENT
-=======
-﻿CREATE DATABASE WEB_EVENT
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
+
+﻿CREATE DATABASE WEB_EVENT;
+
 GO
 
 USE WEB_EVENT;
@@ -85,7 +83,7 @@ CREATE TABLE YeuCauToChuc (
     ngay_yeu_cau DATETIME DEFAULT GETDATE(),
     trang_thai VARCHAR(50) DEFAULT 'pending',
     ghi_chu NVARCHAR(255),
-    FOREIGN KEY (ma_nguoi_dung) REFERENCES [users](ma_nguoi_dung)
+    FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
 );
 
 CREATE TABLE DiaDiemToChuc (
@@ -98,8 +96,3 @@ CREATE TABLE NgonNguDaiDien (
     ma_nguoi_dung INT PRIMARY KEY,
     ngon_ngu NVARCHAR(10) CHECK (ngon_ngu IN ('vi', 'en')) DEFAULT 'vi',
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
-<<<<<<< HEAD
-);
-=======
-);
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be

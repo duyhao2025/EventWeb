@@ -18,7 +18,7 @@ public class DBConnection {
     // Thông tin kết nối: đổi theo cấu hình thực tế của bạn
     private static final String JDBC_URL = "jdbc:sqlserver://localhost:1433;databaseName=WEB_EVENT;encrypt=true;trustServerCertificate=true";
     private static final String DB_USER = "sa";
-    private static final String DB_PASSWORD = "Thangbatdiet123";
+    private static final String DB_PASSWORD = "zxc";
 
     static {
         try {

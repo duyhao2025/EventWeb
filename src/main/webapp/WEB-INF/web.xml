@@ -4,7 +4,15 @@
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <!-- SMTP settings for JavaMail -->
-    
+    <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+</context-param>
+
+<listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+
     <!-- Spring Dispatcher Servlet -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
