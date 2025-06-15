@@ -63,10 +63,9 @@
                 width: 100%;
                 padding: 13px;
                 background-color: #e91e63;
+                border: none;
                 color: white;
                 font-weight: bold;
-                font-size: 16px;
-                border: none;
                 border-radius: 6px;
                 cursor: pointer;
                 transition: background 0.3s ease;
@@ -76,26 +75,37 @@
                 background-color: #d81b60;
             }
 
-            .error {
-                color: red;
+            .message {
                 text-align: center;
-                margin-top: 12px;
+                color: red;
+                margin-bottom: 15px;
+            }
+
+            .warning {
+                text-align: center;
+                color: orange;
+                margin-bottom: 15px;
             }
         </style>
     </head>
     <body>
         <div class="form-container">
-            <h2>Đăng ký Sự kiện</h2>
-            <form action="${pageContext.request.contextPath}/eventregister" method="post">
-                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên để " required>
-                <input type="email" name="email" value="${email}" readonly style="background-color:#eee;" />
-                <input type="text" name="soDienThoai" placeholder="Số điện thoại" required>
-                <input type="submit" value="Đăng ký">
-            </form>
+            <h2>Đăng ký tham gia sự kiện</h2>
 
             <c:if test="${not empty error}">
-                <p class="error">${error}</p>
+                <div class="message">${error}</div>
             </c:if>
+            <c:if test="${not empty warning}">
+                <div class="warning">${warning}</div>
+            </c:if>
+
+            <form action="${pageContext.request.contextPath}/eventregister" method="post">
+                <input type="text" name="hoTen" placeholder="Họ tên" required />
+                <input type="email" name="email" placeholder="Email" required />
+                <input type="text" name="soDienThoai" placeholder="Số điện thoại" required />
+                <input type="submit" value="Đăng ký" />
+            </form>
         </div>
     </body>
 </html>
+

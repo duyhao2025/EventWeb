@@ -4,6 +4,7 @@
  */
 package com.uef.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +18,7 @@ public class SuKien {
     private LocalDateTime ngayGio;
     private String trangThai;
     private boolean daDanhGia;
+    private boolean chuaDienRa;
 
     public int getMaSuKien() {
         return maSuKien;
@@ -57,5 +59,20 @@ public class SuKien {
     public void setDaDanhGia(boolean daDanhGia) {
         this.daDanhGia = daDanhGia;
     }
+    
+    public boolean isChuaDienRa() {
+    return chuaDienRa;
+    }
+
+    public void setChuaDienRa(boolean chuaDienRa) {
+    this.chuaDienRa = chuaDienRa;
+    }
+    
+    public LocalDate getNgayToChuc() {
+    return this.ngayGio != null ? this.ngayGio.toLocalDate() : null;
+    }
+    
+    
 }
+
 

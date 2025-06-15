@@ -15,4 +15,6 @@ public interface DangKyService {
     
 
     public List<SuKien> getLichSuThamGia(int maNguoiDung);
+    void huyDangKy(int maNguoiDung, int maSuKien);
+    SuKien getSuKienById(int maSuKien);
 }

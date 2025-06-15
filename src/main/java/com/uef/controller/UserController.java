@@ -5,6 +5,7 @@ import com.uef.model.User;
 import com.uef.service.DangKyService;
 import com.uef.service.DangKyServiceImpl;
 import com.uef.service.UserService;
+import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
 
@@ -101,45 +102,31 @@ public class UserController {
         out.print(name);
         out.flush();
     }
-// Đăng xuất
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
-// Đăng ký tham gia sự kiện
 
     @GetMapping("/eventregister")
-    public String showEventRegistrationForm(HttpServletRequest request, Model model) {
-        User user = (User) request.getSession().getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("email", user.getEmail());
+    public String showEventRegistrationForm() {
         return "event/eventregister";
     }
 
+    // Xử lý form đăng ký tham gia sự kiện
     @PostMapping("/eventregister")
-    public String processEventRegistration(
-            @RequestParam("hoTen") String hoTen,
+    public String processEventRegistration(@RequestParam("hoTen") String hoTen,
+            @RequestParam("email") String email,
             @RequestParam("soDienThoai") String soDienThoai,
-            HttpServletRequest request,
-            Model model) {
+            Model model,
+            HttpServletRequest request) {
 
         try {
-            User user = (User) request.getSession().getAttribute("user");
-            if (user == null) {
-                return "redirect:/login";
-            }
-
-            String email = user.getEmail(); // lấy từ session
-
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
-           // userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
+            userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
 
             LocalDate expirationDate = LocalDate.now().plusDays(7);
             String ngayHetHan = expirationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -149,10 +136,27 @@ public class UserController {
 
             String qrImagePath = QRCodeGenerator.generateQRCodeImage(qrContent, request);
 
+        
+        try {
+            String realPath = request.getServletContext().getRealPath("/") + qrImagePath;
+            EmailUtil.sendEmailWithEmbeddedImage(
+                email,
+                "Xác nhận đăng ký sự kiện",
+                hoTen,
+                code,
+                ngayHetHan,
+                realPath
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("warning", "Đăng ký thành công nhưng không gửi được email xác nhận.");
+        }
+
+
             model.addAttribute("code", code);
             model.addAttribute("ngayHetHan", ngayHetHan);
             model.addAttribute("qrImagePath", qrImagePath);
-
+            
             return "event/success";
 
         } catch (Exception e) {
@@ -162,7 +166,6 @@ public class UserController {
     }
 
     private DangKyService dangKyService = new DangKyServiceImpl();
-//Thông tin cá nhân và Xem lịch sử sự kiện
 
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
@@ -176,10 +179,11 @@ public class UserController {
 
         List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
         model.addAttribute("events", history);
+        model.addAttribute("danhSachSuKien", history);
+        model.addAttribute("today", LocalDate.now());
 
-        return "user/profile";
+        return "event/eventcancel";
     }
-//Thông tin cá nhân và Xem lịch sử sự kiện
 
     @PostMapping("/user/profile")
     public String updateProfile(@ModelAttribute("user") User user,
@@ -196,4 +200,52 @@ public class UserController {
         redirectAttributes.addFlashAttribute("msg", "Cập nhật thành công!");
         return "redirect:/user/profile";
     }
+    
+    
+    @GetMapping("/event/cancel")
+    public String showCancelEventPage(Model model, HttpSession session) {
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+        return "redirect:/login";
+    }
+
+    List<SuKien> danhSachSuKien = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
+    model.addAttribute("danhSachSuKien", danhSachSuKien);
+    model.addAttribute("today", LocalDate.now());
+    LocalDate today = LocalDate.now();
+    
+    for (SuKien sk : danhSachSuKien) {
+    sk.setChuaDienRa(sk.getNgayToChuc().isAfter(today));
+    }
+    
+    model.addAttribute("danhSachSuKien", danhSachSuKien);
+    
+    return "event/eventcancel"; 
+    }
+    
+    @PostMapping("/event/cancel")
+    public String cancelRegistration(@RequestParam("id") int maSuKien,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+        return "redirect:/login";
+    }
+
+    SuKien sk = dangKyService.getSuKienById(maSuKien);
+    if (sk == null) {
+        redirectAttributes.addFlashAttribute("error", "Sự kiện không tồn tại.");
+        return "redirect:/event/cancel";
+    }
+
+    LocalDate today = LocalDate.now();
+    if (sk.getNgayToChuc().isAfter(today)) {
+        dangKyService.huyDangKy(user.getMaNguoiDung(), maSuKien);
+        redirectAttributes.addFlashAttribute("msg", "Hủy đăng ký thành công.");
+    } else {
+        redirectAttributes.addFlashAttribute("error", "Không thể hủy vì sự kiện đã diễn ra hoặc đang diễn ra.");
+    }
+
+    return "redirect:/event/cancel";
+}
 }
