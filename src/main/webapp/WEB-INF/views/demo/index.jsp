@@ -1,8 +1,8 @@
-<%@page language="java" contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en" class="no-js">
-
 
     <head>
         <meta charset="utf-8">
@@ -10,8 +10,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/assets/images/logo-16x16.png" />
-
-        <title>Argon - Social Network</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display" rel="stylesheet">
@@ -30,14 +28,141 @@
 
         <!-- Local JS -->
         <script src="${pageContext.request.contextPath}/assets/js/load.js" type="text/javascript"></script>
+        <title>Trang chủ sự kiện</title>
+        <style>
+            #categoryFilter {
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+                border-right: 1px solid #ccc;
+                background: #f9f9f9;
+                font-weight: 500;
+            }
+            .search-suggestions {
+                position: absolute;
+                background: #fff;
+                border: 1px solid #ccc;
+                max-height: 250px;
+                width: 100%;
+                overflow-y: auto;
+                z-index: 9999;
+                top: 45px; /* tùy chỉnh để khớp với thanh search của bạn */
+                border-radius: 4px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            }
 
+            .search-suggestions div {
+                padding: 8px 12px;
+                cursor: pointer;
+            }
+
+            .search-suggestions div:hover {
+                background-color: #f0f0f0;
+            }
+            .event-detail-panel {
+                position: fixed;
+                top: 80px;
+                right: 40px;
+                width: 340px;
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                z-index: 999;
+                transition: all 0.3s ease;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', sans-serif;
+                background-color: #f0f2f5;
+            }
+
+            .feed-wrapper {
+                max-width: 720px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+
+            .event-card {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                margin-bottom: 24px;
+                display: flex;
+                overflow: hidden;
+            }
+
+            .event-image {
+                width: 240px;
+                height: 180px;
+                object-fit: cover;
+            }
+
+            .event-info {
+                flex: 1;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .event-title {
+                font-size: 20px;
+                font-weight: 600;
+                color: #333;
+                margin: 0 0 8px;
+            }
+
+            .event-description {
+                font-size: 14px;
+                color: #555;
+                margin-bottom: 12px;
+            }
+
+            .event-dates {
+                font-size: 13px;
+                color: #888;
+                margin-bottom: 8px;
+            }
+
+            .event-action {
+                text-align: right;
+            }
+            .btn-detail {
+                background-color: #e0e0e0;   /* xám nhạt */
+                color: #000;                 /* chữ đen */
+                padding: 10px 16px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 500;
+                margin-right: 10px; /* ~0.1cm khoảng cách giữa 2 nút */
+                display: inline-block;
+            }
+
+            .btn-detail:hover {
+                background-color: #d5d5d5;
+            }
+            .btn-register {
+                background-color: #007bff;
+                color: white;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 500;
+                transition: background 0.2s ease;
+            }
+
+            .btn-register:hover {
+                background-color: #0056b3;
+            }
+        </style>
     </head>
 
     <body class="newsfeed">
         <div class="container-fluid" id="wrapper">
             <div class="row newsfeed-size">
                 <div class="col-md-12 newsfeed-right-side">
-
                     <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
                         <div class="w-100 justify-content-md-center">
                             <ul class="nav navbar-nav enable-mobile px-2">
@@ -94,33 +219,10 @@
                                     </ul>
                                 </form>
                                 <li class="nav-item s-nav dropdown d-mobile">
-                                    <a href="#" class="nav-link nav-icon nav-links drop-w-tooltip" data-toggle="dropdown" data-placement="bottom" data-title="Create" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <a href="${pageContext.request.contextPath}/events/create" title="Tạo sự kiện">
                                         <img src="assets/images/icons/navbar/create.png" alt="navbar icon">
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-right nav-dropdown-menu">
-                                        <a href="#" class="dropdown-item" aria-describedby="createGroup">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <i class='bx bx-group post-option-icon'></i>
-                                                </div>
-                                                <div class="col-md-10">
-                                                    <span class="fs-9">Group</span>
-                                                    <small id="createGroup" class="form-text text-muted">Find people with shared interests</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="dropdown-item" aria-describedby="createEvent">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <i class='bx bx-calendar post-option-icon'></i>
-                                                </div>
-                                                <div class="col-md-10">
-                                                    <span class="fs-9">Event</span>
-                                                    <small id="createEvent" class="form-text text-muted">bring people together with a public or private event</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+
                                 </li>
                                 <li class="nav-item s-nav dropdown message-drop-li">
                                     <a href="#" class="nav-link nav-links message-drop drop-w-tooltip" data-toggle="dropdown" data-placement="bottom" data-title="Messages" role="button" aria-haspopup="true" aria-expanded="false">
@@ -362,8 +464,6 @@
                                         </div>
                                     </ul>
                                 </li>
-                                
-                                
                                 </li>
                                 <li class="nav-item s-nav">
                                     <a href="profile.jsp" class="nav-link nav-links">
@@ -386,14 +486,11 @@
                                         </a>
                                         <a class="dropdown-item" href="#">
                                             <img src="assets/images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
-
                                     </div>
                                 </li>
                                 <button type="button" class="btn nav-link" id="menu-toggle"><img src="assets/images/icons/theme/navs.png" alt="Navbar navs"></button>
                             </ul>
-
                         </div>
-
                     </nav>
                     <div class="row newsfeed-right-side-content mt-3">
                         <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
@@ -422,195 +519,57 @@
                                         <a href="saved.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/saved.png" alt="saved"> Lưu sự kiện</a>
                                         <span class="badge badge-primary badge-pill">8</span>
                                     </li>
-
-
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-6 second-section" id="page-content-wrapper">
+                            <div class="feed-wrapper">
+                                <c:forEach var="event" items="${suKienList}">
+                                    <div class="event-card" data-title="${event.tieuDe}" data-category="${event.tenDanhMuc}">
+                                        <img class="event-image" src="${pageContext.request.contextPath}/uploads/${event.hinhAnh}" alt="Hình sự kiện" />
 
-
-
-                            <!-- Posts -->
-                            <meta charset="UTF-8">
-                            <title>Trang chủ sự kiện</title>
-                            <style>
-                                #categoryFilter {
-                                    border-top-left-radius: 4px;
-                                    border-bottom-left-radius: 4px;
-                                    border-right: 1px solid #ccc;
-                                    background: #f9f9f9;
-                                    font-weight: 500;
-                                }
-                                .search-suggestions {
-                                    position: absolute;
-                                    background: #fff;
-                                    border: 1px solid #ccc;
-                                    max-height: 250px;
-                                    width: 100%;
-                                    overflow-y: auto;
-                                    z-index: 9999;
-                                    top: 45px; /* tùy chỉnh để khớp với thanh search của bạn */
-                                    border-radius: 4px;
-                                    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-                                }
-
-                                .search-suggestions div {
-                                    padding: 8px 12px;
-                                    cursor: pointer;
-                                }
-
-                                .search-suggestions div:hover {
-                                    background-color: #f0f0f0;
-                                }
-                                .event-detail-panel {
-                                    position: fixed;
-                                    top: 80px;
-                                    right: 40px;
-                                    width: 340px;
-                                    background: white;
-                                    padding: 20px;
-                                    border-radius: 12px;
-                                    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-                                    z-index: 999;
-                                    transition: all 0.3s ease;
-                                }
-                                body {
-                                    margin: 0;
-                                    padding: 0;
-                                    font-family: 'Segoe UI', sans-serif;
-                                    background-color: #f0f2f5;
-                                }
-
-                                .feed-wrapper {
-                                    max-width: 720px;
-                                    margin: 0 auto;
-                                    padding: 40px 20px;
-                                }
-
-                                .event-card {
-                                    background: #fff;
-                                    border-radius: 12px;
-                                    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-                                    margin-bottom: 24px;
-                                    display: flex;
-                                    overflow: hidden;
-                                }
-
-                                .event-image {
-                                    width: 240px;
-                                    height: 180px;
-                                    object-fit: cover;
-                                }
-
-                                .event-info {
-                                    flex: 1;
-                                    padding: 20px;
-                                    display: flex;
-                                    flex-direction: column;
-                                    justify-content: space-between;
-                                }
-
-                                .event-title {
-                                    font-size: 20px;
-                                    font-weight: 600;
-                                    color: #333;
-                                    margin: 0 0 8px;
-                                }
-
-                                .event-description {
-                                    font-size: 14px;
-                                    color: #555;
-                                    margin-bottom: 12px;
-                                }
-
-                                .event-dates {
-                                    font-size: 13px;
-                                    color: #888;
-                                    margin-bottom: 8px;
-                                }
-
-                                .event-action {
-                                    text-align: right;
-                                }
-                                .btn-detail {
-                                    background-color: #e0e0e0;   /* xám nhạt */
-                                    color: #000;                 /* chữ đen */
-                                    padding: 10px 16px;
-                                    border-radius: 6px;
-                                    text-decoration: none;
-                                    font-weight: 500;
-                                    margin-right: 10px; /* ~0.1cm khoảng cách giữa 2 nút */
-                                    display: inline-block;
-                                }
-
-                                .btn-detail:hover {
-                                    background-color: #d5d5d5;
-                                }
-                                .btn-register {
-                                    background-color: #007bff;
-                                    color: white;
-                                    padding: 10px 16px;
-                                    border: none;
-                                    border-radius: 6px;
-                                    text-decoration: none;
-                                    font-weight: 500;
-                                    transition: background 0.2s ease;
-                                }
-
-                                .btn-register:hover {
-                                    background-color: #0056b3;
-                                }
-                            </style>
-                            </head>
-                            <body>
-
-                                <div class="feed-wrapper">
-                                    <c:forEach var="event" items="${suKienList}">
-                                        <div class="event-card" data-title="${event.tieuDe}" data-category="${event.tenDanhMuc}">
-                                            <img class="event-image" src="${pageContext.request.contextPath}/assets/img/${event.hinhAnh}" alt="Hình sự kiện" />
-
-                                            <div class="event-info">
-                                                <div>
-                                                    <h3 class="event-title">Tên sự kiện: ${event.tieuDe}</h3>
-                                                    <h3 class="event-title">Thể loại: ${event.maDanhMuc}</h3>
-                                                    <div class="event-description">
-                                                        Mô tả sự kiện:
-                                                        <c:choose>
-                                                            <c:when test="${fn:length(event.moTa) > 20}">
-                                                                ${fn:substring(event.moTa, 0, 20)}...
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                ${event.moTa}
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </div>
-                                                    <div class="event-dates">
-                                                        Bắt đầu: ${event.ngayGio} <br/>
-                                                        Hạn đăng ký: ${event.hanDangKy}
-                                                    </div> 
+                                        <div class="event-info">
+                                            <div>
+                                                <h3 class="event-title">Tên sự kiện: ${event.tieuDe}</h3>
+                                                <h3 class="event-title">Thể loại: ${event.maDanhMuc}</h3>
+                                                <div class="event-description">
+                                                    Mô tả sự kiện:
+                                                    <c:choose>
+                                                        <c:when test="${fn:length(event.moTa) > 1000}">
+                                                            ${fn:substring(event.moTa, 0, 1000)}...
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            ${event.moTa}
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </div>
-                                                <div class="event-action">
-                                                    <button class="btn-detail" onclick="toggleDetail('${event.maSuKien}')">Chi tiết</button>
-                                                    <a href="${pageContext.request.contextPath}/eventregister" class="btn-register">
-                                                        Đăng ký tham gia
-                                                    </a>
-                                                </div>
+
+                                                <div class="event-dates">
+                                                    Bắt đầu: ${event.ngayGio} <br/>
+                                                    Hạn đăng ký: ${event.hanDangKy}
+                                                </div> 
+                                            </div>
+                                            <div class="event-action">
+                                                <button class="btn-detail" onclick="toggleDetail('${event.maSuKien}')">Chi tiết</button>
+                                                <a href="${pageContext.request.contextPath}/eventregister?eid=${event.maSuKien}" class="btn-register">
+                                                    Đăng ký tham gia
+                                                </a>
                                             </div>
                                         </div>
-
-                                        <!-- PHẦN CHI TIẾT ĐI KÈM MỖI SỰ KIỆN -->
-                                        <div class="event-detail-panel" id="detail-${event.maSuKien}" style="display:none;">
-                                            <img src="${pageContext.request.contextPath}/assets/img/${event.hinhAnh}" width="100%" />
-                                            <h3><strong>Tên sự kiện:</strong>${event.tieuDe}</h3>
-                                            <p><strong>Mô tả:</strong>${event.moTa}</p>
-                                            <p><strong>Bắt đầu:</strong> ${event.ngayGio}</p>
-                                            <p><strong>Hạn đăng ký:</strong> ${event.hanDangKy}</p>
-                                            <p><strong>Thời lượng:</strong> ${event.thoiLuongPhut} phút</p>
-                                            <p><strong>Số người tối đa:</strong> ${event.soNguoiToiDa}</p>
-                                        </div>
-                                    </c:forEach>
-                                </div>
+                                    </div>
+                                    <!-- PHẦN CHI TIẾT ĐI KÈM MỖI SỰ KIỆN -->
+                                    <div class="event-detail-panel" id="detail-${event.maSuKien}" style="display:none;">
+                                        <img src="${pageContext.request.contextPath}/assets/img/${event.hinhAnh}" width="100%" />
+                                        <h3><strong>Tên sự kiện:</strong>${event.tieuDe}</h3>
+                                        <p><strong>Mô tả:</strong>${event.moTa}</p>
+                                        <p><strong>Bắt đầu:</strong> ${event.ngayGio}</p>
+                                        <p><strong>Hạn đăng ký:</strong> ${event.hanDangKy}</p>
+                                        <p><strong>Thời lượng:</strong> ${event.thoiLuongPhut} phút</p>
+                                        <p><strong>Số người tối đa:</strong> ${event.soNguoiToiDa}</p>
+                                        <p><strong>Địa chỉ :</strong> ${event.diaDiem}</p>
+                                    </div>
+                                </c:forEach>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -665,106 +624,6 @@
                 </div>
             </div>
 
-            <!-- Chat Popup -->
-            <!--
-                <div class="chat-popup shadow" id="hide-in-mobile">
-                    <div class="row chat-window col-xs-5 col-md-3">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="top-bar shadow-sm d-flex align-items-center">
-                                    <div class="col-md-6 col-xs-6">
-                                        <a href="profile.html">
-                                            <img src="assets/images/users/user-2.jpg" class="mr-2 chatbox-user-img" alt="Chat user image">
-                                            <span class="panel-title">Karen Minas</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 col-xs-6 d-flex align-items-center justify-content-between">
-                                        <a href="#">
-                                            <img src="assets/images/icons/messenger/video-call.png" class="chatbox-call" alt="Chatbox contact types">
-                                        </a>
-                                        <a href="#" data-toggle="modal" data-target="#callModal">
-                                            <img src="assets/images/icons/messenger/call.png" class="chatbox-call" alt="Chatbox contact types">
-                                        </a>
-                                        <a href="javascript:void(0)"><i id="minimize-chat-window" class="bx bx-minus icon_minim"></i></a>
-                                        <a href="javascript:void(0)" id="close-chatbox"><i class="bx bx-x"></i></a>
-                                    </div>
-                                </div>
-                                <div id="messagebody" class="msg_container_base">
-                                    <div class="row msg_container base_sent">
-                                        <div class="col-md-10 col-xs-10">
-                                            <div class="messages message-reply bg-primary shadow-sm">
-                                                <p>Are you going to the party on Saturday?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row msg_container base_receive">
-                                        <div class="col-md-10 col-xs-10">
-                                            <div class="messages message-receive shadow-sm">
-                                                <p>I was thinking about it. Are you?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row msg_container base_receive">
-                                        <div class="col-xs-10 col-md-10">
-                                            <div class="messages message-receive shadow-sm">
-                                                <p>Really? Well, what time does it start?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row msg_container base_sent">
-                                        <div class="col-xs-10 col-md-10">
-                                            <div class="messages message-reply bg-primary shadow-sm">
-                                                <p>It starts at 8:00 pm, and I really think you should go.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row msg_container base_receive">
-                                        <div class="col-xs-10 col-md-10">
-                                            <div class="messages message-receive shadow-sm">
-                                                <p>Well, who else is going to be there?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row msg_container base_sent">
-                                        <div class="col-md-10 col-xs-10">
-                                            <div class="messages message-reply bg-primary shadow-sm">
-                                                <p>Everybody from school.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer chat-inputs">
-                                    <div class="col-md-12 message-box">
-                                        <input type="text" class="w-100 search-input type-message" placeholder="Type a message..." />
-                                        <div class="chat-tools">
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/theme/post-image.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/messenger/gif.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/messenger/smile.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/messenger/console.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/messenger/attach-file.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                            <a href="#" class="chatbox-tools">
-                                                <img src="assets/images/icons/messenger/photo-camera.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            -->
-            <!-- END Chat Popup -->
-
             <!-- Call modal -->
             <div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
                 <div class="modal-dialog call-modal-dialog" role="document">
@@ -812,31 +671,31 @@
             <!-- Optional -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
             <script type="text/javascript">
-                                                        $("#menu-toggle").click(function (e) {
-                                                            e.preventDefault();
-                                                            $("#wrapper").toggleClass("toggled");
-                                                        });
+                                                    $("#menu-toggle").click(function (e) {
+                                                        e.preventDefault();
+                                                        $("#wrapper").toggleClass("toggled");
+                                                    });
 
             </script>
             <script src="assets/js/app.js"></script>
             <script src="assets/js/components/components.js"></script>
             <script>
-                                                        function toggleDetail(id) {
-                                                            // Ẩn tất cả các chi tiết
-                                                            document.querySelectorAll(".event-detail-panel").forEach(el => {
-                                                                if (el.id !== "detail-" + id) {
-                                                                    el.style.display = "none";
-                                                                }
-                                                            });
-
-                                                            // Toggle panel được chọn
-                                                            const panel = document.getElementById("detail-" + id);
-                                                            if (panel.style.display === "none" || panel.style.display === "") {
-                                                                panel.style.display = "block";
-                                                            } else {
-                                                                panel.style.display = "none";
+                                                    function toggleDetail(id) {
+                                                        // Ẩn tất cả các chi tiết
+                                                        document.querySelectorAll(".event-detail-panel").forEach(el => {
+                                                            if (el.id !== "detail-" + id) {
+                                                                el.style.display = "none";
                                                             }
+                                                        });
+
+                                                        // Toggle panel được chọn
+                                                        const panel = document.getElementById("detail-" + id);
+                                                        if (panel.style.display === "none" || panel.style.display === "") {
+                                                            panel.style.display = "block";
+                                                        } else {
+                                                            panel.style.display = "none";
                                                         }
+                                                    }
             </script>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
@@ -865,9 +724,9 @@
 
                     // Danh sách tiêu đề sự kiện lấy từ server bằng JSP
                     const eventTitles = [
-                        <c:forEach var="event" items="${suKienList}" varStatus="loop">
-                                                   "${event.tieuDe}"<c:if test="${!loop.last}">,</c:if>
-                                    </c:forEach>
+                <c:forEach var="event" items="${suKienList}" varStatus="loop">
+                    "${event.tieuDe}"<c:if test="${!loop.last}">,</c:if>
+                </c:forEach>
                     ];
 
                     searchBox.addEventListener("input", function () {
@@ -905,7 +764,35 @@
                         }
                     });
                 });
-                                               </script>
-                                                </body>
+            </script>
+            <footer>
+                <!-- footer.jsp -->
+                <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
+                    <div class="container">
+                        <div class="row text-left">
+                            <div class="col-md-3">
+                                <h5 class="text-white mb-3">Về chúng tôi</h5>
+                                <p><a href="#" class="text-light">Giới thiệu</a></p>
+                                <p><a href="#" class="text-light">Bảng giá dịch vụ</a></p>
+                                <p><a href="#" class="text-light">Liên hệ quảng cáo</a></p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5 class="text-white mb-3">Trợ giúp</h5>
+                                <p><a href="#" class="text-light">Liên hệ</a></p>
+                                <p><a href="#" class="text-light">Trung tâm trợ giúp</a></p>
+                                <p><a href="#" class="text-light">Quy định và Điều khoản</a></p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5 class="text-white mb-3">Thông tin</h5>
+                                <p><a href="#" class="text-light">Quy chế hoạt động</a></p>
+                                <p><a href="#" class="text-light">Cơ chế giải quyết tranh chấp</a></p>
+                                <p><a href="#" class="text-light">Chính sách bảo mật thông tin</a></p>
+                            </div>
 
-                                                </html>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+    </body>
+
+</html>

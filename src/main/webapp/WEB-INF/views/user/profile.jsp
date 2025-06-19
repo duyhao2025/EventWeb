@@ -3,9 +3,31 @@
 <!DOCTYPE html>
 <html lang="vi">
     <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <meta charset="UTF-8">
         <title>Thông tin cá nhân & Lịch sử sự kiện</title>
         <style>
+            footer a {
+                color: #eaeaea;
+                text-decoration: none;
+            }
+
+            footer a:hover {
+                color: #ffffff;
+                text-decoration: underline;
+            }
+
+            footer h5 {
+                font-weight: bold;
+                margin-bottom: 16px;
+            }
+            footer ul {
+                padding-left: 0;
+            }
+
+            footer li {
+                margin-bottom: 6px;
+            }
             body {
                 font-family: 'Segoe UI', sans-serif;
                 background: #f3f5f8;
@@ -132,5 +154,39 @@
                 </c:forEach>
             </div>
         </div>
+        <footer>
+            <!-- footer.jsp -->
+            <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3 ">
+                            <h5 class="text-white">Về chúng tôi</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Giới thiệu</a></li>
+                                <li><a href="#">Bảng giá dịch vụ</a></li>
+                                <li><a href="#">Liên hệ quảng cáo</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 ">
+                            <h5 class="text-white">Trợ giúp</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Liên hệ</a></li>
+                                <li><a href="#">Trung tâm trợ giúp</a></li>
+                                <li><a href="#">Quy định và Điều khoản</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 ">
+                            <h5 class="text-white">Thông tin</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Quy chế hoạt động</a></li>
+                                <li><a href="#">Cơ chế giải quyết tranh chấp</a></li>
+                                <li><a href="#">Chính sách bảo mật thông tin</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>

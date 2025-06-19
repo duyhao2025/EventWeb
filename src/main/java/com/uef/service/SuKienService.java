@@ -6,16 +6,14 @@ package com.uef.service;
 
 import com.uef.model.SuKien;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
  * @author Admin
  */
-public interface DangKyService {
-
-    public List<SuKien> getLichSuThamGia(int maNguoiDung);
-
-    void huyDangKy(int maNguoiDung, int maSuKien);
-
-    SuKien getSuKienById(int maSuKien);
+public interface SuKienService {
+    List<SuKien> getAll();
+    void create(SuKien sukien,MultipartFile file);
+    String saveImage(MultipartFile file);
 }

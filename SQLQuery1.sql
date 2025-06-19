@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-CREATE DATABASE WEB_EVENT
-=======
 ﻿CREATE DATABASE WEB_EVENT
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
 GO
 
 USE WEB_EVENT;
@@ -98,8 +94,15 @@ CREATE TABLE NgonNguDaiDien (
     ma_nguoi_dung INT PRIMARY KEY,
     ngon_ngu NVARCHAR(10) CHECK (ngon_ngu IN ('vi', 'en')) DEFAULT 'vi',
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
-<<<<<<< HEAD
+
 );
-=======
-);
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
+INSERT INTO DanhMuc (ten_vi, ten_en) VALUES
+  ('Hội thảo',            'Conference'),
+  ('Workshop',            'Workshop'),
+  ('Cuộc thi',            'Competition'),
+  ('Triển lãm',           'Exhibition'),
+  ('Hội thảo trực tuyến',  'Webinar'),
+  ('Buổi giao lưu',       'Networking Event'),
+  ('Buổi hòa nhạc',       'Concert'),
+  ('Khóa học ngắn hạn',    'Short Course');
+ 

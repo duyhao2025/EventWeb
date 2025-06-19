@@ -10,6 +10,7 @@ import com.uef.until.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author Admin
@@ -39,7 +40,7 @@ public class DangKyServiceImpl implements DangKyService {
                     sk.setNgayGio(ts.toLocalDateTime());
                 }
                 sk.setTrangThai(rs.getString("trang_thai"));
-                sk.setDaDanhGia(rs.getBoolean("daDanhGia"));
+               
                 list.add(sk);
             }
         } catch (SQLException e) {
@@ -47,4 +48,40 @@ public class DangKyServiceImpl implements DangKyService {
         }
         return list;
     }
+
+    @Override
+    public void huyDangKy(int maNguoiDung, int maSuKien) {
+        String sql = "DELETE FROM DangKy WHERE ma_nguoi_dung = ? AND ma_su_kien = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maNguoiDung);
+            stmt.setInt(2, maSuKien);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public SuKien getSuKienById(int maSuKien) {
+        String sql = "SELECT * FROM SuKien WHERE ma_su_kien = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, maSuKien);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                SuKien sk = new SuKien();
+                sk.setMaSuKien(rs.getInt("ma_su_kien"));
+                sk.setTieuDe(rs.getString("tieu_de"));
+                Timestamp ts = rs.getTimestamp("ngay_gio");
+                if (ts != null) {
+                    sk.setNgayGio(ts.toLocalDateTime());
+                }
+                sk.setTrangThai(rs.getString("trang_thai"));
+                return sk;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

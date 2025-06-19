@@ -4,7 +4,9 @@ import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
 import com.uef.service.DangKyServiceImpl;
+import com.uef.service.SuKienService;
 import com.uef.service.UserService;
+import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
 
@@ -29,14 +31,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private SuKienService suKienService;
 
     // GET: Hiển thị form đăng nhập
     @GetMapping("/demo")
     public String showDemo(HttpSession session, Model model) {
-        // Đẩy thông tin user (đã login) vào model để JSP có thể hiện avatar…
-        User u = (User) session.getAttribute("currentUser");
+        // Không còn kiểm tra session → ai cũng vào được demo
+        User u = (User) session.getAttribute("user");
         model.addAttribute("user", u);
-        return "demo/index";    // ← trỏ tới /WEB-INF/views/demo/index.jsp
+
+        List<SuKien> event = suKienService.getAll();
+        model.addAttribute("suKienList", event);
+
+        return "demo/index";
     }
 
     // POST: Xử lý đăng nhập
@@ -122,24 +130,21 @@ public class UserController {
     }
 
     @PostMapping("/eventregister")
-    public String processEventRegistration(
-            @RequestParam("hoTen") String hoTen,
+    public String processEventRegistration(@RequestParam("hoTen") String hoTen,
+            @RequestParam("email") String email,
             @RequestParam("soDienThoai") String soDienThoai,
-            HttpServletRequest request,
-            Model model) {
+            Model model,
+            HttpServletRequest request) {
 
         try {
-            User user = (User) request.getSession().getAttribute("user");
-            if (user == null) {
-                return "redirect:/login";
+            if (!email.toLowerCase().endsWith("@gmail.com")) {
+                model.addAttribute("error", "Sai định dạng email Gmail");
+                return "event/eventregister";
             }
-
-            String email = user.getEmail(); // lấy từ session
-
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
-           // userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
+            userService.eventRegisterUser(hoTen, email, "macdinh", "nguoi_tham_gia");
 
             LocalDate expirationDate = LocalDate.now().plusDays(7);
             String ngayHetHan = expirationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -148,6 +153,21 @@ public class UserController {
                     hoTen, email, soDienThoai, code, ngayHetHan);
 
             String qrImagePath = QRCodeGenerator.generateQRCodeImage(qrContent, request);
+
+            try {
+                String realPath = request.getServletContext().getRealPath("/") + qrImagePath;
+                EmailUtil.sendEmailWithEmbeddedImage(
+                        email,
+                        "Xác nhận đăng ký sự kiện",
+                        hoTen,
+                        code,
+                        ngayHetHan,
+                        realPath
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                model.addAttribute("warning", "Đăng ký thành công nhưng không gửi được email xác nhận.");
+            }
 
             model.addAttribute("code", code);
             model.addAttribute("ngayHetHan", ngayHetHan);
