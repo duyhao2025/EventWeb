@@ -18,7 +18,7 @@ CREATE TABLE users  (
 
 CREATE TABLE DanhMuc (
     ma_danh_muc INT PRIMARY KEY IDENTITY(1,1),
-    ten_vi NVARCHAR(100),
+    ten_vi NVARCHAR(100) COLLATE Vietnamese_CI_AS,
     ten_en NVARCHAR(100)
 );
 
@@ -70,7 +70,7 @@ CREATE TABLE DanhGia (
     nhan_xet NVARCHAR(MAX),
     ngay_danh_gia DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
-   FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
+    FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
 );
 
 
@@ -96,13 +96,12 @@ CREATE TABLE NgonNguDaiDien (
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
 
 );
-INSERT INTO DanhMuc (ten_vi, ten_en) VALUES
-  ('Hội thảo',            'Conference'),
-  ('Workshop',            'Workshop'),
-  ('Cuộc thi',            'Competition'),
-  ('Triển lãm',           'Exhibition'),
-  ('Hội thảo trực tuyến',  'Webinar'),
-  ('Buổi giao lưu',       'Networking Event'),
-  ('Buổi hòa nhạc',       'Concert'),
-  ('Khóa học ngắn hạn',    'Short Course');
- 
+INSERT INTO DanhMuc(ten_vi, ten_en) VALUES
+  (N'Hội thảo',            'Conference'),
+  (N'Workshop',            'Workshop'),
+  (N'Cuộc thi',            'Competition'),
+  (N'Triển lãm',           'Exhibition'),
+  (N'Hội thảo trực tuyến',  'Webinar'),
+  (N'Buổi giao lưu',       'Networking Event'),
+  (N'Buổi hòa nhạc',       'Concert'),
+  (N'Khóa học ngắn hạn',    'Short Course');

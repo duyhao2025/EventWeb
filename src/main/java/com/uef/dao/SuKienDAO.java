@@ -16,4 +16,5 @@ public interface SuKienDAO {
     List<SuKien> findAll() throws Exception;
     
     void insert(SuKien e) throws Exception;
+    
 }

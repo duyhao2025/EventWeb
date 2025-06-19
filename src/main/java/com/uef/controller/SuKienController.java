@@ -56,6 +56,7 @@ public class SuKienController {
             @RequestParam("hanDangKy") String hanDangKyStr,
             @RequestParam("thoiLuongPhut") Integer thoiLuongPhut,
             @RequestParam("soNguoiToiDa") Integer soNguoiToiDa,
+            @RequestParam("diaDiem") String diaDiem,
             @RequestParam(value = "imageFile", required = false) MultipartFile file,
             HttpSession session
     ) {
@@ -68,6 +69,7 @@ public class SuKienController {
         sukien.setHanDangKy(LocalDateTime.parse(hanDangKyStr, DT_FMT));
         sukien.setThoiLuongPhut(thoiLuongPhut);
         sukien.setSoNguoiToiDa(soNguoiToiDa);
+        sukien.setDiaDiem(diaDiem);     
 
         // 2) Gán người tạo
         User user = (User) session.getAttribute("user");
@@ -92,4 +94,5 @@ public class SuKienController {
 
         return "redirect:/demo";
     }
+    
 }

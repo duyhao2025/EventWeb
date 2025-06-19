@@ -526,66 +526,47 @@
                         </div>
                         <div    class="col-md-6 second-section" id="page-content-wrapper">
                             <div class="feed-wrapper">
-
+                                <%@ page import="com.uef.model.SuKien" %>
+                                <%@ page import="java.util.List" %>
                                 <%
                                     List<SuKien> list = (List<SuKien>) request.getAttribute("suKienList");
-                                    if (list != null) {
+                                    if (list != null && !list.isEmpty()) {
                                         for (SuKien event : list) {
                                 %>
                                 <div class="event-card" data-title="<%= event.getTieuDe()%>" data-category="<%= event.getTenDanhMuc()%>">
-                                    <img class="event-image" src="<%= request.getContextPath()%>/uploads/<%= event.getHinhAnh()%>" alt="Hình sự kiện" />
+                                    <img class="event-image"
+                                         src="<%=request.getContextPath()%>/uploads/<%=event.getHinhAnh()%>"
+                                         alt="Hình sự kiện"/>
 
                                     <div class="event-info">
                                         <div>
                                             <h3 class="event-title">Tên sự kiện: <%= event.getTieuDe()%></h3>
-                                            <h3 class="event-title">Thể loại: <%= event.getTenDanhMuc()%></h3>
-                                            <div class="event-description">
-                                                Mô tả sự kiện:
-                                                <%
-                                                    String moTa = event.getMoTa();
-                                                    if (moTa != null && moTa.length() > 1000) {
-                                                        out.print(moTa.substring(0, 1000) + "...");
-                                                    } else {
-                                                        out.print(moTa);
-                                                    }
-                                                %>
-                                            </div>
-
-                                            <div class="event-dates">
-                                                Bắt đầu: <%= event.getNgayGio()%> <br/>
+                                            <p>Thể loại: <%= event.getTenDanhMuc()%></p>
+                                            <p class="event-dates">
+                                                Bắt đầu: <%= event.getNgayGio()%><br/>
                                                 Hạn đăng ký: <%= event.getHanDangKy()%>
-                                            </div> 
+                                            </p>
                                         </div>
                                         <div class="event-action">
-                                            <button class="btn-detail" onclick="toggleDetail('<%= event.getMaSuKien()%>')">Chi tiết</button>
-                                            <a href="<%= request.getContextPath()%>/eventregister?eid=<%= event.getMaSuKien()%>" class="btn-register">
-                                                Đăng ký tham gia 
-                                            </a>
+                                            <a href="<%=request.getContextPath()%>/events/<%=event.getMaSuKien()%>/edit"
+                                               class="btn btn-sm btn-outline-primary">Sửa</a>
+                                            <form action="<%=request.getContextPath()%>/events/<%=event.getMaSuKien()%>/delete"
+                                                  method="post"
+                                                  style="display:inline"
+                                                  onsubmit="return confirm('Bạn có chắc muốn xóa sự kiện này?');">
+                                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- PHẦN CHI TIẾT -->
-                                <div class="event-detail-panel" id="detail-<%= event.getMaSuKien()%>" style="display:none;">
-                                    <img src="<%= request.getContextPath()%>/assets/img/<%= event.getHinhAnh()%>" width="100%" />
-                                    <h3><strong>Tên sự kiện:</strong> <%= event.getTieuDe()%></h3>
-                                    <p><strong>Thể loại:</strong> <%= event.getTenDanhMuc()%></p>
-                                    <p><strong>Mô tả:</strong> <%= event.getMoTa()%></p>
-                                    <p><strong>Bắt đầu:</strong> <%= event.getNgayGio()%></p>
-                                    <p><strong>Hạn đăng ký:</strong> <%= event.getHanDangKy()%></p>
-                                    <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
-                                    <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
-                                    <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
-                                </div>
                                 <%
-                                    } // end for
+                                    }  // end for
                                 } else {
                                 %>
-                                <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
-                                <%
-                                    } // end if
-                                %>
+                                <p class="text-center text-muted">Bạn chưa có sự kiện nào.</p>
+                                <% }%>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -687,31 +668,31 @@
             <!-- Optional -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
             <script type="text/javascript">
-                    $("#menu-toggle").click(function (e) {
-                        e.preventDefault();
-                        $("#wrapper").toggleClass("toggled");
-                    });
+                                                      $("#menu-toggle").click(function (e) {
+                                                          e.preventDefault();
+                                                          $("#wrapper").toggleClass("toggled");
+                                                      });
 
             </script>
             <script src="assets/js/app.js"></script>
             <script src="assets/js/components/components.js"></script>
             <script>
-                    function toggleDetail(id) {
-                        // Ẩn tất cả các chi tiết
-                        document.querySelectorAll(".event-detail-panel").forEach(el => {
-                            if (el.id !== "detail-" + id) {
-                                el.style.display = "none";
-                            }
-                        });
+                                                      function toggleDetail(id) {
+                                                          // Ẩn tất cả các chi tiết
+                                                          document.querySelectorAll(".event-detail-panel").forEach(el => {
+                                                              if (el.id !== "detail-" + id) {
+                                                                  el.style.display = "none";
+                                                              }
+                                                          });
 
-                        // Toggle panel được chọn
-                        const panel = document.getElementById("detail-" + id);
-                        if (panel.style.display === "none" || panel.style.display === "") {
-                            panel.style.display = "block";
-                        } else {
-                            panel.style.display = "none";
-                        }
-                    }
+                                                          // Toggle panel được chọn
+                                                          const panel = document.getElementById("detail-" + id);
+                                                          if (panel.style.display === "none" || panel.style.display === "") {
+                                                              panel.style.display = "block";
+                                                          } else {
+                                                              panel.style.display = "none";
+                                                          }
+                                                      }
             </script>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {

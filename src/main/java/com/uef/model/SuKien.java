@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public class SuKien {
 
-     private Integer maSuKien;
+    private Integer maSuKien;
     private Integer maNguoiDung;
     private String tieuDe;
     private String moTa;
@@ -30,6 +30,15 @@ public class SuKien {
     private Integer maNguoiToChuc;
     private String trangThai;
     private String thongTinNganHang;
+    private String tenDanhMuc;
+
+    public String getTenDanhMuc() {
+        return tenDanhMuc;
+    }
+
+    public void setTenDanhMuc(String tenDanhMuc) {
+        this.tenDanhMuc = tenDanhMuc;
+    }
 
     public Integer getMaSuKien() {
         return maSuKien;

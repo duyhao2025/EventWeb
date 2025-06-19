@@ -38,31 +38,43 @@ public class SuKienDAOImpl implements SuKienDAO {
         }
     }
 
+    @Override
+    public List<SuKien> findAll() throws Exception {
+        List<SuKien> list = new ArrayList<>();
+        String sql = """
+        SELECT 
+          s.ma_su_kien, s.tieu_de, s.mo_ta, s.hinh_anh,
+          s.ngay_gio, s.han_dang_ky, s.thoi_luong_phut,
+          s.so_nguoi_toi_da, s.dia_diem, 
+          s.ma_danh_muc, s.ma_nguoi_to_chuc,
+          d.ten_vi AS tenDanhMuc
+        FROM SuKien s
+        LEFT JOIN DanhMuc d
+          ON s.ma_danh_muc = d.ma_danh_muc
+        ORDER BY s.ngay_gio DESC
+        """;
 
-        @Override
-        public List<SuKien> findAll() throws Exception {
-            List<SuKien> list = new ArrayList<>();
-            String sql = "SELECT ma_su_kien, tieu_de, mo_ta, hinh_anh, ngay_gio, han_dang_ky, "
-                    + "thoi_luong_phut, so_nguoi_toi_da, dia_diem, ma_danh_muc, ma_nguoi_to_chuc "
-                    + "FROM SuKien ORDER BY ngay_gio DESC";
-            try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    SuKien e = new SuKien();
-                    e.setMaSuKien(rs.getInt("ma_su_kien"));
-                    e.setTieuDe(rs.getString("tieu_de"));
-                    e.setMoTa(rs.getString("mo_ta"));
-                    e.setHinhAnh(rs.getString("hinh_anh"));
-                    e.setNgayGio(rs.getTimestamp("ngay_gio").toLocalDateTime());
-                    e.setHanDangKy(rs.getTimestamp("han_dang_ky").toLocalDateTime());
-                    e.setThoiLuongPhut(rs.getInt("thoi_luong_phut"));
-                    e.setSoNguoiToiDa(rs.getInt("so_nguoi_toi_da"));
-                    e.setDiaDiem(rs.getString("dia_diem"));
-                    e.setMaDanhMuc(rs.getInt("ma_danh_muc"));
-                    e.setMaNguoiToChuc(rs.getInt("ma_nguoi_to_chuc"));
-                    list.add(e);
-                }
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                SuKien e = new SuKien();
+                e.setMaSuKien(rs.getInt("ma_su_kien"));
+                e.setTieuDe(rs.getString("tieu_de"));
+                e.setMoTa(rs.getString("mo_ta"));
+                e.setHinhAnh(rs.getString("hinh_anh"));
+                e.setNgayGio(rs.getTimestamp("ngay_gio").toLocalDateTime());
+                e.setHanDangKy(rs.getTimestamp("han_dang_ky").toLocalDateTime());
+                e.setThoiLuongPhut(rs.getInt("thoi_luong_phut"));
+                e.setSoNguoiToiDa(rs.getInt("so_nguoi_toi_da"));
+                e.setDiaDiem(rs.getString("dia_diem"));
+                e.setMaDanhMuc(rs.getInt("ma_danh_muc"));
+                e.setMaNguoiToChuc(rs.getInt("ma_nguoi_to_chuc"));
+                // map thêm tên danh mục:
+                e.setTenDanhMuc(rs.getString("tenDanhMuc"));
+                list.add(e);
             }
-            return list;
         }
+        return list;
     }
 
+}

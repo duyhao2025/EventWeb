@@ -13,7 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Admin
  */
 public interface SuKienService {
+
     List<SuKien> getAll();
-    void create(SuKien sukien,MultipartFile file);
+
+    void create(SuKien sukien, MultipartFile file);
+
     String saveImage(MultipartFile file);
+
 }
