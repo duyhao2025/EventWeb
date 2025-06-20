@@ -6,6 +6,8 @@ package com.uef.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  *
@@ -19,6 +21,27 @@ public class SuKien {
     private String trangThai;
     private boolean daDanhGia;
     private boolean chuaDienRa;
+    private String diaChi;
+    private String ngayGioHienThi;
+    private LocalDate ngayToChuc;
+
+    
+    
+    public String getNgayGioHienThi() {
+    return ngayGioHienThi;
+    }
+
+    public void setNgayGioHienThi(String ngayGioHienThi) {
+    this.ngayGioHienThi = ngayGioHienThi;
+    }
+    
+    public String getDiaChi() {
+        return diaChi;
+    }
+
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
+    }
 
     public int getMaSuKien() {
         return maSuKien;
@@ -42,6 +65,10 @@ public class SuKien {
 
     public void setNgayGio(LocalDateTime ngayGio) {
         this.ngayGio = ngayGio;
+        if (ngayGio != null) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        this.ngayGioHienThi = ngayGio.format(formatter);
+    }
     }
 
     public String getTrangThai() {
@@ -69,10 +96,12 @@ public class SuKien {
     }
     
     public LocalDate getNgayToChuc() {
-    return this.ngayGio != null ? this.ngayGio.toLocalDate() : null;
+    return ngayToChuc;
     }
     
-    
+    public void setNgayToChuc(LocalDate toLocalDate){
+    this.ngayToChuc = toLocalDate;
+    }
 }
 
 

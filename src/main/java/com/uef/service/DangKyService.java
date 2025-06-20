@@ -14,7 +14,8 @@ import java.util.List;
 public interface DangKyService {
     
 
-    public List<SuKien> getLichSuThamGia(int maNguoiDung);
+    public List<SuKien> getTatCaSuKien(int maNguoiDung);
     void huyDangKy(int maNguoiDung, int maSuKien);
     SuKien getSuKienById(int maSuKien);
+    public List<SuKien> getTatCaSuKien();
 }

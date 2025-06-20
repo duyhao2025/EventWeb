@@ -8,6 +8,8 @@ import com.uef.model.SuKien;
 import com.uef.until.DBConnection;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -18,7 +20,7 @@ public class DangKyServiceImpl implements DangKyService {
 
     //Xem lịch sử tham gia
     @Override
-    public List<SuKien> getLichSuThamGia(int maNguoiDung) {
+    public List<SuKien> getTatCaSuKien(int maNguoiDung) {
         List<SuKien> list = new ArrayList<>();
         String sql = "SELECT s.*, "
                 + "CASE WHEN dg.danh_gia_id IS NOT NULL THEN 1 ELSE 0 END AS daDanhGia "
@@ -63,26 +65,64 @@ public class DangKyServiceImpl implements DangKyService {
     
     @Override
     public SuKien getSuKienById(int maSuKien) {
-        String sql = "SELECT * FROM SuKien WHERE ma_su_kien = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, maSuKien);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                SuKien sk = new SuKien();
-                sk.setMaSuKien(rs.getInt("ma_su_kien"));
-                sk.setTieuDe(rs.getString("tieu_de"));
-                Timestamp ts = rs.getTimestamp("ngay_gio");
-                if (ts != null) {
-                    sk.setNgayGio(ts.toLocalDateTime());
-                }
-                sk.setTrangThai(rs.getString("trang_thai"));
-                return sk;
+    String sql = "SELECT * FROM SuKien WHERE ma_su_kien = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, maSuKien);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            SuKien sk = new SuKien();
+            sk.setMaSuKien(rs.getInt("ma_su_kien"));
+            sk.setTieuDe(rs.getString("tieu_de"));
+
+            // ✅ Thêm dòng này để có địa chỉ hiển thị trên Google Maps
+            sk.setDiaChi(rs.getString("dia_diem"));
+
+            Timestamp ts = rs.getTimestamp("ngay_gio");
+            if (ts != null) {
+                sk.setNgayGio(ts.toLocalDateTime());
+                sk.setNgayToChuc(ts.toLocalDateTime().toLocalDate());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            sk.setTrangThai(rs.getString("trang_thai"));
+            return sk;
         }
-        return null;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+    
+    @Override
+    public List<SuKien> getTatCaSuKien() {
+    List<SuKien> list = new ArrayList<>();
+    String sql = "SELECT * FROM SuKien ORDER BY ngay_gio DESC";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            SuKien sk = new SuKien();
+            sk.setMaSuKien(rs.getInt("ma_su_kien"));
+            sk.setTieuDe(rs.getString("tieu_de"));
+            sk.setDiaChi(rs.getString("dia_diem"));
+            Timestamp ts = rs.getTimestamp("ngay_gio");
+            if (ts != null) {
+                LocalDateTime ldt = ts.toLocalDateTime();
+                sk.setNgayGio(ldt);
+                sk.setNgayToChuc(ldt.toLocalDate());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                sk.setNgayGioHienThi(ldt.format(formatter));
+            }
+
+            list.add(sk);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 
+    return list;
+}
 }

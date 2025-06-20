@@ -123,6 +123,12 @@ public class UserController {
             HttpServletRequest request) {
 
         try {
+            
+            if (!email.toLowerCase().endsWith("@gmail.com")) {
+            model.addAttribute("error", "Sai định dạng email Gmail");
+            return "event/eventregister";
+            }
+            
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
@@ -177,7 +183,7 @@ public class UserController {
         User user = userService.findById(loggedUser.getMaNguoiDung());
         model.addAttribute("user", user);
 
-        List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
+        List<SuKien> history = dangKyService.getTatCaSuKien(user.getMaNguoiDung());
         model.addAttribute("events", history);
         model.addAttribute("danhSachSuKien", history);
         model.addAttribute("today", LocalDate.now());
@@ -202,50 +208,58 @@ public class UserController {
     }
     
     
-    @GetMapping("/event/cancel")
-    public String showCancelEventPage(Model model, HttpSession session) {
-    User user = (User) session.getAttribute("user");
-    if (user == null) {
-        return "redirect:/login";
+        @GetMapping("/event/list")
+        public String showEventListPage(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+         List<SuKien> danhSachSuKien = dangKyService.getTatCaSuKien();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        for (SuKien sk : danhSachSuKien) {
+        if (sk.getNgayToChuc() != null) {
+            sk.setChuaDienRa(sk.getNgayToChuc().isAfter(LocalDate.now()));
+        } else {
+            sk.setChuaDienRa(false); 
+        }
     }
 
-    List<SuKien> danhSachSuKien = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
-    model.addAttribute("danhSachSuKien", danhSachSuKien);
-    model.addAttribute("today", LocalDate.now());
-    LocalDate today = LocalDate.now();
-    
-    for (SuKien sk : danhSachSuKien) {
-    sk.setChuaDienRa(sk.getNgayToChuc().isAfter(today));
-    }
-    
-    model.addAttribute("danhSachSuKien", danhSachSuKien);
-    
-    return "event/eventcancel"; 
-    }
-    
-    @PostMapping("/event/cancel")
-    public String cancelRegistration(@RequestParam("id") int maSuKien,
-                                 HttpSession session,
-                                 RedirectAttributes redirectAttributes) {
-    User user = (User) session.getAttribute("user");
-    if (user == null) {
-        return "redirect:/login";
-    }
+        model.addAttribute("danhSachSuKien", danhSachSuKien);
+        model.addAttribute("today", LocalDate.now());
 
-    SuKien sk = dangKyService.getSuKienById(maSuKien);
-    if (sk == null) {
-        redirectAttributes.addFlashAttribute("error", "Sự kiện không tồn tại.");
-        return "redirect:/event/cancel";
-    }
-
-    LocalDate today = LocalDate.now();
-    if (sk.getNgayToChuc().isAfter(today)) {
-        dangKyService.huyDangKy(user.getMaNguoiDung(), maSuKien);
-        redirectAttributes.addFlashAttribute("msg", "Hủy đăng ký thành công.");
-    } else {
-        redirectAttributes.addFlashAttribute("error", "Không thể hủy vì sự kiện đã diễn ra hoặc đang diễn ra.");
-    }
-
-    return "redirect:/event/cancel";
+        return "event/eventlist";
 }
+
+        @PostMapping("/event/list")
+        public String cancelRegistration(@RequestParam("id") int maSuKien,
+                                         HttpSession session,
+                                         RedirectAttributes redirectAttributes) {
+            User user = (User) session.getAttribute("user");
+            if (user == null) return "redirect:/login";
+
+            SuKien sk = dangKyService.getSuKienById(maSuKien);
+            if (sk == null) {
+                redirectAttributes.addFlashAttribute("error", "Sự kiện không tồn tại.");
+                return "redirect:/event/list";
+            }
+
+            LocalDate today = LocalDate.now();
+            if (sk.getNgayToChuc().isAfter(today)) {
+                dangKyService.huyDangKy(user.getMaNguoiDung(), maSuKien);
+                redirectAttributes.addFlashAttribute("msg", "Hủy đăng ký thành công.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Không thể hủy vì sự kiện đã diễn ra hoặc đang diễn ra.");
+            }
+
+            return "redirect:/event/list";
+        }
+        @GetMapping("/event/map")
+            public String showEventMapPage(@RequestParam("id") int maSuKien, Model model) {
+            SuKien sk = dangKyService.getSuKienById(maSuKien);
+            if (sk == null) {
+                model.addAttribute("error", "Không tìm thấy sự kiện");
+                return "redirect:/eventregister";
+            }
+            model.addAttribute("diaChi", sk.getDiaChi());
+            return "event/eventmap";
+        }
 }
