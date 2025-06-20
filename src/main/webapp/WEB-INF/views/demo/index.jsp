@@ -1,3 +1,4 @@
+<%@page import="com.uef.model.User"%>
 <%@page import="com.uef.model.SuKien"%>
 <%@page import="java.util.List"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -165,622 +166,327 @@
         <div class="container-fluid" id="wrapper">
             <div class="row newsfeed-size">
                 <div class="col-md-12 newsfeed-right-side">
-                    <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
-                        <div class="w-100 justify-content-md-center">
-                            <ul class="nav navbar-nav enable-mobile px-2">
-                                <li class="nav-item">
-                                    <button type="button" class="btn nav-link p-0"><img src="assets/images/icons/theme/post-image.png" class="f-nav-icon" alt="Quick make post"></button>
-                                </li>
-                                <li class="nav-item w-100 py-2">
-                                    <form class="d-inline form-inline w-100 px-4">
-                                        <div class="input-group">
-                                            <input type="text" id="searchBox" class="form-control search-input" placeholder="Tìm kiếm sự kiện " aria-label="Search" aria-describedby="search-addon">
-                                            <div id="suggestions" class="search-suggestions"></div>
-                                            <div class="input-group-append">
-                                                <button class="btn search-button" type="button"><i class='bx bx-search'></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="messages.html" class="nav-link nav-icon nav-links message-drop drop-w-tooltip" data-placement="bottom" data-title="Messages">
-                                        <img src="assets/images/icons/navbar/message.png" class="message-dropdown f-nav-icon" alt="navbar icon">
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="navbar-nav mr-5 flex-row" id="main_menu">
-                                <a class="navbar-brand nav-item mr-lg-5" href="index.html"><img src="assets/images/logo-64x64.png" width="40" height="40" class="mr-3" alt="Logo"></a>
-                                <!-- Collect the nav links, forms, and other content for toggling -->
-                                <div class="input-group-prepend">
-                                    <select class="form-control" id="categoryFilter" style="margin-top:15px;">
+
+                    <nav class="navbar navbar-expand-lg shadow-sm sticky-top bg-white">
+                        <div class="container-fluid">
+                            <div class="d-flex w-100 align-items-center">
+                                <!-- Logo -->
+                                <a class="navbar-brand me-3" href="${pageContext.request.contextPath}/demo">
+                                    <img src="${pageContext.request.contextPath}/assets/images/logo-64x64.png"
+                                         width="40" alt="Logo">
+                                </a>
+
+                                <!-- Dropdown Danh mục -->
+                                <form action="${pageContext.request.contextPath}/events/filter" method="get" class="me-3">
+                                    <select id="categoryFilter" class="form-select" style="width: 150px;">
                                         <option value="">Danh mục</option>
-                                        <option value="Thể thao">Thể thao</option>
-                                        <option value="Nhạc hội">Nhạc hội</option>
-                                        <option value="Off Fan">Off Fan</option>
+                                        <option value="Hội thảo">Hội thảo</option>
+                                        <option value="Workshop">Workshop</option>
+                                        <option value="Cuộc thi">Cuộc thi</option>
+                                        <option value="Triển lãm">Triển lãm</option>
+                                        <option value="Hội thảo trực tuyến">Hội thảo trực tuyến</option>
+                                        <option value="Buổi giao lưu">Buổi giao lưu</option>
+                                        <option value="Buổi hòa nhạc">Buổi hòa nhạc</option>
+                                        <option value="Khóa học ngắn hạn">Khóa học ngắn hạn</option>
                                     </select>
-                                </div>
-                                <form class="w-30 mx-2 my-auto d-inline form-inline mr-5 dropdown search-form">
-                                    <div class="input-group" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="searchDropdown">
-                                        <input type="text" class="form-control search-input w-75" placeholder="Tìm kiếm sự kiện" aria-label="Search" aria-describedby="search-addon">
-                                        <div class="input-group-append">
-                                            <button class="btn search-button" type="button"><i class='bx bx-search'></i></button>
-                                        </div>
-                                    </div>
-                                    <ul class="dropdown-menu notify-drop nav-drop shadow-sm" aria-labelledby="searchDropdown">
-                                        <div class="notify-drop-title">
-                                            <div class="row">
-                                                <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Search Results <span class="badge badge-pill badge-primary ml-2">29</span></div>
-                                            </div>
-                                        </div>
-                                        <!-- end notify title -->
-                                        <!-- notify content -->
-
-                                        <div class="notify-drop-footer text-center">
-                                            <a href="#">See More</a>
-                                        </div>
-                                    </ul>
                                 </form>
-                                <li class="nav-item s-nav dropdown d-mobile">
-                                    <a href="${pageContext.request.contextPath}/events/create" title="Tạo sự kiện">
-                                        <img src="assets/images/icons/navbar/create.png" alt="navbar icon">
-                                    </a>
-
-                                </li>
-                                <li class="nav-item s-nav dropdown message-drop-li">
-                                    <a href="#" class="nav-link nav-links message-drop drop-w-tooltip" data-toggle="dropdown" data-placement="bottom" data-title="Messages" role="button" aria-haspopup="true" aria-expanded="false">
-                                        <img src="assets/images/icons/navbar/message.png" class="message-dropdown" alt="navbar icon"> <span class="badge badge-pill badge-primary">1</span>
-                                    </a>
-                                    <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
-                                        <div class="notify-drop-title">
-                                            <div class="row">
-                                                <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Messages | <a href="#">Requests</a></div>
-                                                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                                    <a href="#" class="notify-right-icon">
-                                                        Mark All as Read
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- end notify title -->
-                                        <!-- notify content -->
-                                        <div class="drop-content">
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-6.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Susan P. Jarvis</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <i class='bx bx-check'></i> This party is going to have a DJ, food, and drinks.
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-5.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Ruth D. Greene</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        Great, I’ll see you tomorrow!.
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-7.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Kimberly R. Hatfield</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        yeah, I will be there.
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-8.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Joe S. Feeney</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        I would really like to bring my friend Jake, if...
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-9.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">William S. Willmon</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        Sure, what can I help you with?
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-10.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Sean S. Smith</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        Which of those two is best?
-                                                    </p>
-                                                </div>
-                                            </li>
-                                        </div>
-                                        <div class="notify-drop-footer text-center">
-                                            <a href="#">See More</a>
-                                        </div>
-                                    </ul>
-                                </li>
-                                <li class="nav-item s-nav dropdown notification">
-                                    <a href="#" class="nav-link nav-links rm-drop-mobile drop-w-tooltip" data-toggle="dropdown" data-placement="bottom" data-title="Notifications" role="button" aria-haspopup="true" aria-expanded="false">
-                                        <img src="assets/images/icons/navbar/notification.png" class="notification-bell" alt="navbar icon"> <span class="badge badge-pill badge-primary">3</span>
-                                    </a>
-                                    <ul class="dropdown-menu notify-drop dropdown-menu-right nav-drop shadow-sm">
-                                        <div class="notify-drop-title">
-                                            <div class="row">
-                                                <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications <span class="badge badge-pill badge-primary ml-2">3</span></div>
-                                                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                                    <a href="#" class="notify-right-icon">
-                                                        Mark All as Read
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- end notify title -->
-                                        <!-- notify content -->
-                                        <div class="drop-content">
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-10.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Sean</a> <span class="notification-type">replied to your comment on a post in </span><a href="#" class="notification-for">PHP</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bxs-group'></i></span> 3h
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-7.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Kimberly</a> <span class="notification-type">likes your comment "I would really... </span>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bxs-like'></i></span> 7h
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-8.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <span class="notification-type">10 people saw your story before it disappeared. See who saw it.</span>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bx-images'></i></span> 23h
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-11.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Michelle</a> <span class="notification-type">posted in </span><a href="#" class="notification-for">Argon Social Design System</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bxs-quote-right'></i></span> 1d
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-5.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Karen</a> <span class="notification-type">likes your comment "Sure, here... </span>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bxs-like'></i></span> 2d
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                                    <div class="notify-img">
-                                                        <img src="assets/images/users/user-12.png" alt="notification user image">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                                    <a href="#" class="notification-user">Irwin</a> <span class="notification-type">posted in </span><a href="#" class="notification-for">Themeforest</a>
-                                                    <a href="#" class="notify-right-icon">
-                                                        <i class='bx bx-radio-circle-marked'></i>
-                                                    </a>
-                                                    <p class="time">
-                                                        <span class="badge badge-pill badge-primary"><i class='bx bxs-quote-right'></i></span> 3d
-                                                    </p>
-                                                </div>
-                                            </li>
-                                        </div>
-                                        <div class="notify-drop-footer text-center">
-                                            <a href="#">See More</a>
-                                        </div>
-                                    </ul>
-                                </li>
-                                </li>
-                                <li class="nav-item s-nav">
-                                    <a href="profile.jsp" class="nav-link nav-links">
-                                        <div class="menu-user-image">
-                                            <img src="assets/images/users/user-4.jpg" class="menu-user-img ml-1" alt="Menu Image">
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item s-nav nav-icon dropdown">
-                                    <a href="settings.html" data-toggle="dropdown" data-placement="bottom" data-title="Settings" class="nav-link settings-link rm-drop-mobile drop-w-tooltip" id="settings-dropdown"><img src="assets/images/icons/navbar/settings.png" class="nav-settings" alt="navbar icon"></a>
-                                    <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm" aria-labelledby="settings-dropdown">
-                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/user/profile">
-                                            <img src="assets/images/icons/settings/account.png" alt="Navbar icon"> Thông tin cá nhân</a>
-                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/settings-password">
-                                            <img src="assets/images/icons/settings/contact.png" alt="Navbar icon"> Đổi mật khẩu
+                                <!-- Search + Pencil -->
+                                <form action="${pageContext.request.contextPath}/events/list"
+                                      method="get"
+                                      class="d-flex flex-grow-1 me-3">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               id="searchBox"
+                                               name="keyword"
+                                               class="form-control rounded-pill ps-4"
+                                               placeholder="Tìm kiếm sự kiện…">
+                                        <button class="btn btn-outline-secondary rounded-pill ms-2"
+                                                type="submit"
+                                                style="width: 44px; height: 44px;">
+                                            <i class="bx bx-search fs-4"></i>
+                                        </button>
+                                        <!-- Pencil icon to create -->
+                                        <a href="${pageContext.request.contextPath}/events/create"
+                                           class="btn btn-link ms-2"
+                                           style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">
+                                            <i class="bx bx-pencil" style="font-size:2rem; line-height:1;"></i>
                                         </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
-                                            <img src="assets/images/icons/navbar/logout.png" alt="Navbar icon"> Đăng xuất
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <img src="assets/images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
                                     </div>
-                                </li>
-                                <button type="button" class="btn nav-link" id="menu-toggle"><img src="assets/images/icons/theme/navs.png" alt="Navbar navs"></button>
-                            </ul>
+                                </form>
+
+                                <!-- Right-side Icons -->
+                                <div class="d-flex align-items-center">
+
+                                    <a href="#" class="nav-link ps-3">
+                                        <img src="${pageContext.request.contextPath}/assets/images/users/user-4.jpg"
+                                             class="rounded-circle"
+                                             width="36"
+                                             style="object-fit: cover;"
+                                             alt="User">
+                                    </a>
+                                    <li class="nav-item s-nav nav-icon dropdown">
+                                        <a href="settings.html" data-toggle="dropdown" data-placement="bottom" data-title="Settings" class="nav-link settings-link rm-drop-mobile drop-w-tooltip" id="settings-dropdown"><img src="assets/images/icons/navbar/settings.png" class="nav-settings" alt="navbar icon"></a>
+                                        <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm" aria-labelledby="settings-dropdown">
+                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/user/profile">
+                                                <img src="assets/images/icons/settings/account.png" alt="Navbar icon"> Thông tin cá nhân</a>
+                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/settings-password">
+                                                <img src="assets/images/icons/settings/contact.png" alt="Navbar icon"> Đổi mật khẩu
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
+                                                <img src="assets/images/icons/navbar/logout.png" alt="Navbar icon"> Đăng xuất
+                                            </a>
+                                            <a class="dropdown-item" href="#">
+                                                <img src="assets/images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
+                                        </div>
+                                    </li>
+                                </div>
+                            </div>
                         </div>
                     </nav>
-                    <div class="row newsfeed-right-side-content mt-3">
-                        <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
-                            <div class="card newsfeed-user-card h-100">
-                                <ul class="list-group list-group-flush newsfeed-left-sidebar">
-                                    <li class="list-group-item">
-                                        <h6>Home</h6>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center sd-active">
-                                        <a href="index.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/newsfeed.png" alt="newsfeed"> Trang chính</a>
-                                        <a href="#" class="newsfeedListicon"><i class='bx bx-dots-horizontal-rounded'></i></a>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="messages.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/message.png" alt="message"> Tin nhắn</a>
-                                        <span class="badge badge-primary badge-pill">2</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="groups.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/group.png" alt="group"> Nhóm của bạn</a>
-                                        <span class="badge badge-primary badge-pill">17</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="my-events.jsp" class="sidebar-item"><img src="assets/images/icons/left-sidebar/event.png" alt="event"> Sự kiện bạn tổ chức</a>
-                                        <span class="badge badge-primary badge-pill">3</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="saved.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/saved.png" alt="saved"> Lưu sự kiện</a>
-                                        <span class="badge badge-primary badge-pill">8</span>
-                                    </li>
-                                </ul>
-                            </div>
+
+
+                    <button type="button" class="btn nav-link" id="menu-toggle"><img src="assets/images/icons/theme/navs.png" alt="Navbar navs"></button>
+
+                </div>
+
+                <div class="row newsfeed-right-side-content mt-3">
+                    <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
+                        <div class="card newsfeed-user-card h-100">
+                            <ul class="list-group list-group-flush newsfeed-left-sidebar">
+                                <li class="list-group-item">
+                                    <h6>Home</h6>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center sd-active">
+                                    <a href="index.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/newsfeed.png" alt="newsfeed"> Trang chính</a>
+                                    <a href="#" class="newsfeedListicon"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="${pageContext.request.contextPath}/events/my_events" class="sidebar-item">
+                                        <img src="assets/images/icons/left-sidebar/event.png" alt="event"> Sự kiện bạn tổ chức
+                                    </a>
+                                    <span class="badge badge-primary badge-pill">3</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="saved.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/saved.png" alt="saved"> Lưu sự kiện</a>
+                                    <span class="badge badge-primary badge-pill">8</span>
+                                </li>
+                            </ul>
                         </div>
-                        <div    class="col-md-6 second-section" id="page-content-wrapper">
-                            <div class="feed-wrapper">
+                    </div>
+                    <div    class="col-md-6 second-section" id="page-content-wrapper">
+                        <div class="feed-wrapper">
 
-                                <%
-                                    List<SuKien> list = (List<SuKien>) request.getAttribute("suKienList");
-                                    if (list != null) {
-                                        for (SuKien event : list) {
-                                %>
-                                <div class="event-card" data-title="<%= event.getTieuDe()%>" data-category="<%= event.getTenDanhMuc()%>">
-                                    <img class="event-image" src="<%= request.getContextPath()%>/uploads/<%= event.getHinhAnh()%>" alt="Hình sự kiện" />
+                            <%
+                                List<SuKien> list = (List<SuKien>) request.getAttribute("suKienList");
+                                if (list != null) {
+                                    for (SuKien event : list) {
+                            %>
+                            <div class="event-card" data-title="<%= event.getTieuDe()%>" data-category="<%= event.getTenDanhMuc()%>">
 
-                                    <div class="event-info">
-                                        <div>
-                                            <h3 class="event-title">Tên sự kiện: <%= event.getTieuDe()%></h3>
-                                            <h3 class="event-title">Thể loại: <%= event.getTenDanhMuc()%></h3>
-                                            <div class="event-description">
-                                                Mô tả sự kiện:
-                                                <%
-                                                    String moTa = event.getMoTa();
-                                                    if (moTa != null && moTa.length() > 1000) {
-                                                        out.print(moTa.substring(0, 1000) + "...");
-                                                    } else {
-                                                        out.print(moTa);
-                                                    }
-                                                %>
-                                            </div>
 
-                                            <div class="event-dates">
-                                                Bắt đầu: <%= event.getNgayGio()%> <br/>
-                                                Hạn đăng ký: <%= event.getHanDangKy()%>
-                                            </div> 
+                                <div class="event-info">
+                                    <div>
+                                        <h3 class="event-title">Tên sự kiện: <%= event.getTieuDe()%></h3>
+                                        <h3 class="event-title">Thể loại: <%= event.getTenDanhMuc()%></h3>
+                                        <div class="event-description">
+                                            <strong>Email tổ chức:</strong> <%= event.getCreatorEmail()%>
                                         </div>
-                                        <div class="event-action">
-                                            <button class="btn-detail" onclick="toggleDetail('<%= event.getMaSuKien()%>')">Chi tiết</button>
-                                            <a href="<%= request.getContextPath()%>/eventregister?eid=<%= event.getMaSuKien()%>" class="btn-register">
-                                                Đăng ký tham gia 
-                                            </a>
-                                        </div>
+
+                                        <div class="event-dates">
+                                            Bắt đầu: <%= event.getNgayGio()%> <br/>
+                                            Hạn đăng ký: <%= event.getHanDangKy()%>
+                                        </div> 
+                                    </div>
+                                    <div class="event-action">
+                                        <%
+                                            // Lấy user từ session
+                                            User u = (User) session.getAttribute("user");
+                                            // So sánh email
+                                            if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
+                                        %>
+                                        <a href="<%=request.getContextPath()%>/events/edit/<%=event.getMaSuKien()%>"
+                                           class="btn btn-warning btn-sm me-2">Sửa</a>
+                                        <form action="<%=request.getContextPath()%>/events/delete/<%=event.getMaSuKien()%>"
+                                              method="post" style="display:inline;"
+                                              onsubmit="return confirm('Xác nhận xóa sự kiện?');">
+                                            <button type="submit" class="btn btn-danger btn-sm me-2">Xóa</button>
+                                        </form>
+                                        <%
+                                            }
+                                        %>
+                                        <button class="btn-detail" onclick="toggleDetail('<%= event.getMaSuKien()%>')">Chi tiết</button>
+                                        <a href="${pageContext.request.contextPath}/eventregister" class="btn-register">
+                                            Đăng ký tham gia
+                                        </a>
                                     </div>
                                 </div>
-
-                                <!-- PHẦN CHI TIẾT -->
-                                <div class="event-detail-panel" id="detail-<%= event.getMaSuKien()%>" style="display:none;">
-                                    <img src="<%= request.getContextPath()%>/assets/img/<%= event.getHinhAnh()%>" width="100%" />
-                                    <h3><strong>Tên sự kiện:</strong> <%= event.getTieuDe()%></h3>
-                                    <p><strong>Thể loại:</strong> <%= event.getTenDanhMuc()%></p>
-                                    <p><strong>Mô tả:</strong> <%= event.getMoTa()%></p>
-                                    <p><strong>Bắt đầu:</strong> <%= event.getNgayGio()%></p>
-                                    <p><strong>Hạn đăng ký:</strong> <%= event.getHanDangKy()%></p>
-                                    <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
-                                    <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
-                                    <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
-                                </div>
-                                <%
-                                    } // end for
-                                } else {
-                                %>
-                                <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
-                                <%
-                                    } // end if
-                                %>
                             </div>
+
+                            <!-- PHẦN CHI TIẾT -->
+                            <div class="event-detail-panel" id="detail-<%= event.getMaSuKien()%>" style="display:none;">
+
+                                <h3><strong>Tên sự kiện:</strong> <%= event.getTieuDe()%></h3>
+                                <p><strong>Thể loại:</strong> <%= event.getTenDanhMuc()%></p>
+                                <p><strong>Mô tả:</strong> <%= event.getMoTa()%></p>
+                                <p><strong>Bắt đầu:</strong> <%= event.getNgayGio()%></p>
+                                <p><strong>Hạn đăng ký:</strong> <%= event.getHanDangKy()%></p>
+                                <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
+                                <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
+                                <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
+                                
+                            </div>
+                            <%
+                                } // end for
+                            } else {
+                            %>
+                            <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
+                            <%
+                                } // end if
+                            %>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modals -->
-            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="postModal" aria-labelledby="postModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body post-body">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-7 post-content">
-                                        <img src="https://scontent.fevn1-2.fna.fbcdn.net/v/t1.0-9/56161887_588993861570433_2896723195090436096_n.jpg?_nc_cat=103&_nc_eui2=AeFI0UuTq3uUF_TLEbnZwM-qSRtgOu0HE2JPwW6b4hIki73-2OWYhc7L1MPsYl9cYy-w122CCak-Fxj0TE1a-kjsd-KXzh5QsuvxbW_mg9qqtg&_nc_ht=scontent.fevn1-2.fna&oh=ea44bffa38f368f98f0553c5cef8e455&oe=5D050B05" alt="post-image">
-                                    </div>
-                                    <div class="col-md-5 pr-3">
-                                        <div class="media text-muted pr-3 pt-3">
-                                            <img src="assets/images/users/user-1.jpg" alt="user image" class="mr-3 post-modal-user-img">
-                                            <div class="media-body">
-                                                <div class="d-flex justify-content-between align-items-center w-100 post-modal-top-user fs-9">
-                                                    <a href="#" class="text-gray-dark">John Michael</a>
-                                                    <div class="dropdown">
-                                                        <a href="#" class="postMoreSettings" role="button" data-toggle="dropdown" id="postOptions" aria-haspopup="true" aria-expanded="false">
-                                                            <i class='bx bx-dots-horizontal-rounded'></i>
-                                                        </a>
-                                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left postDropdownMenu">
-                                                            <a href="#" class="dropdown-item" aria-describedby="savePost">
-                                                                <div class="row">
-                                                                    <div class="col-md-2">
-                                                                        <i class='bx bx-bookmark-plus postOptionIcon'></i>
-                                                                    </div>
-                                                                    <div class="col-md-10">
-                                                                        <span class="postOptionTitle">Save post</span>
-                                                                        <small id="savePost" class="form-text text-muted">Add this to your saved items</small>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <span class="d-block fs-8">3 hours ago <i class='bx bx-globe ml-3'></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3 post-modal-caption fs-9">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis voluptatem veritatis harum, tenetur, quibusdam voluptatum, incidunt saepe minus maiores ea atque sequi illo veniam sint quaerat corporis totam et. Culpa?</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Call modal -->
-            <div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
-                <div class="modal-dialog call-modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header align-items-center">
-                            <div class="call-status">
-                                <h1 id="callModalLabel" class="modal-title mr-3">Connected</h1>
-                                <span class="online-status bg-success"></span>
-                            </div>
-                            <div class="modal-options d-flex align-items-center">
-                                <button type="button" class="btn btn-quick-link" id="minimize-call-window">
-                                    <i class='bx bx-minus'></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row h-100">
-                                <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                    <div class="call-user text-center">
-                                        <div class="call-user-img-anim">
-                                            <img src="assets/images/users/user-1.jpg" class="call-user-img" alt="Call user image">
-                                        </div>
-                                        <p class="call-user-name">Name Surename</p>
-                                        <p class="text-muted call-time">05:28</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 offset-md-4 d-flex align-items-center justify-content-between call-btn-list">
-                                    <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Disable microphone"><i class='bx bxs-microphone'></i></a>
-                                    <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Enable camera"><i class='bx bxs-video-off'></i></a>
-                                    <a href="#" class="btn call-btn drop-call" data-toggle="tooltip" data-placement="top" data-title="End call" data-dismiss="modal" aria-label="Close"><i class='bx bxs-phone'></i></a>
-                                    <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Share Screen"><i class='bx bx-laptop'></i></a>
-                                    <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Dark mode"><i class='bx bx-moon'></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- END call modal -->
 
-            <!-- Core -->
-            <script src="assets/js/jquery/jquery-3.3.1.min.js"></script>
-            <script src="assets/js/popper/popper.min.js"></script>
-            <script src="assets/js/bootstrap/bootstrap.min.js"></script>
-            <!-- Optional -->
-            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-            <script type="text/javascript">
-                    $("#menu-toggle").click(function (e) {
-                        e.preventDefault();
-                        $("#wrapper").toggleClass("toggled");
+        <!-- Core -->
+        <script src="assets/js/jquery/jquery-3.3.1.min.js"></script>
+        <script src="assets/js/popper/popper.min.js"></script>
+        <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+        <!-- Optional -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script>
+                                            const CONTEXT_PATH = "${pageContext.request.contextPath}";
+        </script>
+        <script type="text/javascript">
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+        </script>
+        <script src="assets/js/app.js"></script>
+        <script src="assets/js/components/components.js"></script>
+        <script>
+            function toggleDetail(id) {
+                // Ẩn tất cả các chi tiết
+                document.querySelectorAll(".event-detail-panel").forEach(el => {
+                    if (el.id !== "detail-" + id) {
+                        el.style.display = "none";
+                    }
+                });
+
+                // Toggle panel được chọn
+                const panel = document.getElementById("detail-" + id);
+                if (panel.style.display === "none" || panel.style.display === "") {
+                    panel.style.display = "block";
+                } else {
+                    panel.style.display = "none";
+                }
+            }
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchBox = document.getElementById("searchBox");
+                const suggestionBox = document.getElementById("suggestions");
+
+                if (searchBox) {
+                    searchBox.addEventListener("input", function () {
+                        const keyword = this.value.trim();
+
+                        if (keyword.length < 2) {
+                            suggestionBox.innerHTML = "";
+                            return;
+                        }
+
+                        fetch(`${window.location.origin}${pageContext.request.contextPath}/events/search?keyword=` + encodeURIComponent(keyword))
+                                .then(response => response.json())
+                                .then(data => {
+                                    let html = "";
+                                    data.forEach(event => {
+                                        html += `<div onclick="location.href='${pageContext.request.contextPath}/events/detail/${event.maSuKien}'">
+                                    <strong>${event.tieuDe}</strong> - ${event.tenDanhMuc}
+                                 </div>`;
+                                    });
+                                    suggestionBox.innerHTML = html;
+                                });
                     });
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchBox = document.getElementById("searchBox");
 
-            </script>
-            <script src="assets/js/app.js"></script>
-            <script src="assets/js/components/components.js"></script>
-            <script>
-                    function toggleDetail(id) {
-                        // Ẩn tất cả các chi tiết
-                        document.querySelectorAll(".event-detail-panel").forEach(el => {
-                            if (el.id !== "detail-" + id) {
-                                el.style.display = "none";
+                if (searchBox) {
+                    searchBox.addEventListener("input", function () {
+                        const keyword = this.value.trim().toLowerCase();
+
+                        document.querySelectorAll(".event-card").forEach(card => {
+                            const title = card.getAttribute("data-title").toLowerCase();
+                            if (title.includes(keyword)) {
+                                card.style.display = "flex"; // hoặc "block" nếu bạn dùng layout khác
+                            } else {
+                                card.style.display = "none";
                             }
                         });
+                    });
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const categoryFilter = document.getElementById("categoryFilter");
 
-                        // Toggle panel được chọn
-                        const panel = document.getElementById("detail-" + id);
-                        if (panel.style.display === "none" || panel.style.display === "") {
-                            panel.style.display = "block";
-                        } else {
-                            panel.style.display = "none";
-                        }
-                    }
-            </script>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const searchBox = document.getElementById("searchBox");
+                if (categoryFilter) {
+                    categoryFilter.addEventListener("change", function () {
+                        const selectedCategory = this.value.toLowerCase();
 
-                    if (searchBox) {
-                        searchBox.addEventListener("input", function () {
-                            const keyword = this.value.trim().toLowerCase();
+                        document.querySelectorAll(".event-card").forEach(card => {
+                            const category = card.getAttribute("data-category").toLowerCase();
 
-                            document.querySelectorAll(".event-card").forEach(card => {
-                                const title = card.getAttribute("data-title").toLowerCase();
-                                if (title.includes(keyword)) {
-                                    card.style.display = "flex"; // hoặc "block" nếu bạn dùng layout khác
-                                } else {
-                                    card.style.display = "none";
-                                }
-                            });
+                            if (!selectedCategory || category === selectedCategory) {
+                                card.style.display = "flex";  // hoặc "block" nếu dùng layout khác
+                            } else {
+                                card.style.display = "none";
+                            }
                         });
-                    }
-                });
-            </script>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const searchBox = document.getElementById("searchBox");
+                    });
+                }
+            });
+        </script>
 
-                    if (searchBox) {
-                        searchBox.addEventListener("input", function () {
-                            const keyword = this.value.trim().toLowerCase();
-
-                            document.querySelectorAll(".event-card").forEach(card => {
-                                const title = card.getAttribute("data-title").toLowerCase();
-                                if (title.includes(keyword)) {
-                                    card.style.display = "flex"; // hoặc "block" nếu bạn dùng layout khác
-                                } else {
-                                    card.style.display = "none";
-                                }
-                            });
-                        });
-                    }
-                });
-            </script>
-            <footer>
-                <!-- footer.jsp -->
-                <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
-                    <div class="container">
-                        <div class="row text-left">
-                            <div class="col-md-3">
-                                <h5 class="text-white mb-3">Về chúng tôi</h5>
-                                <p><a href="#" class="text-light">Giới thiệu</a></p>
-                                <p><a href="#" class="text-light">Bảng giá dịch vụ</a></p>
-                                <p><a href="#" class="text-light">Liên hệ quảng cáo</a></p>
-                            </div>
-                            <div class="col-md-3">
-                                <h5 class="text-white mb-3">Trợ giúp</h5>
-                                <p><a href="#" class="text-light">Liên hệ</a></p>
-                                <p><a href="#" class="text-light">Trung tâm trợ giúp</a></p>
-                                <p><a href="#" class="text-light">Quy định và Điều khoản</a></p>
-                            </div>
-                            <div class="col-md-3">
-                                <h5 class="text-white mb-3">Thông tin</h5>
-                                <p><a href="#" class="text-light">Quy chế hoạt động</a></p>
-                                <p><a href="#" class="text-light">Cơ chế giải quyết tranh chấp</a></p>
-                                <p><a href="#" class="text-light">Chính sách bảo mật thông tin</a></p>
-                            </div>
-
+        <footer>
+            <!-- footer.jsp -->
+            <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
+                <div class="container">
+                    <div class="row text-left">
+                        <div class="col-md-3">
+                            <h5 class="text-white mb-3">Về chúng tôi</h5>
+                            <p><a href="#" class="text-light">Giới thiệu</a></p>
+                            <p><a href="#" class="text-light">Bảng giá dịch vụ</a></p>
+                            <p><a href="#" class="text-light">Liên hệ quảng cáo</a></p>
                         </div>
+                        <div class="col-md-3">
+                            <h5 class="text-white mb-3">Trợ giúp</h5>
+                            <p><a href="#" class="text-light">Liên hệ</a></p>
+                            <p><a href="#" class="text-light">Trung tâm trợ giúp</a></p>
+                            <p><a href="#" class="text-light">Quy định và Điều khoản</a></p>
+                        </div>
+                        <div class="col-md-3">
+                            <h5 class="text-white mb-3">Thông tin</h5>
+                            <p><a href="#" class="text-light">Quy chế hoạt động</a></p>
+                            <p><a href="#" class="text-light">Cơ chế giải quyết tranh chấp</a></p>
+                            <p><a href="#" class="text-light">Chính sách bảo mật thông tin</a></p>
+                        </div>
+
                     </div>
                 </div>
-            </footer>
+            </div>
+        </footer>
     </body>
 
 </html>

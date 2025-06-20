@@ -20,4 +20,13 @@ public interface SuKienService {
 
     String saveImage(MultipartFile file);
 
+    SuKien findById(int id);
+
+    void update(SuKien sk);
+
+    void deleteById(int id);
+
+    List<SuKien> searchByTitle(String keyword);
+
+    List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc);
 }

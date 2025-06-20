@@ -105,3 +105,12 @@ INSERT INTO DanhMuc(ten_vi, ten_en) VALUES
   (N'Buổi giao lưu',       'Networking Event'),
   (N'Buổi hòa nhạc',       'Concert'),
   (N'Khóa học ngắn hạn',    'Short Course');
+ UPDATE DanhMuc SET ten_vi = N'Hội thảo' WHERE ma_danh_muc = 1;
+UPDATE DanhMuc SET ten_vi = N'Workshop' WHERE ma_danh_muc = 2;
+UPDATE DanhMuc SET ten_vi = N'Cuộc thi' WHERE ma_danh_muc = 3;
+UPDATE DanhMuc SET ten_vi = N'Triển lãm' WHERE ma_danh_muc = 4;
+UPDATE DanhMuc SET ten_vi = N'Hội thảo trực tuyến' WHERE ma_danh_muc = 5;
+UPDATE DanhMuc SET ten_vi = N'Buổi giao lưu' WHERE ma_danh_muc = 6;
+UPDATE DanhMuc SET ten_vi = N'Buổi hòa nhạc' WHERE ma_danh_muc = 7;
+UPDATE DanhMuc SET ten_vi = N'Khóa học ngắn hạn' WHERE ma_danh_muc = 8;
+SELECT * FROM DanhMuc;

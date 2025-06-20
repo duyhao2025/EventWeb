@@ -22,10 +22,7 @@
                 <div class="row">
                     <!-- Cột trái -->
                     <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label for="imageFile" class="form-label">Hình ảnh sự kiện</label>
-                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
-                        </div>
+
                         <div class="mb-3">
                             <label for="title" class="form-label">Tên sự kiện</label>
                             <input type="text" class="form-control" id="tieuDe" name="tieuDe" placeholder="Nhập tên sự kiện" required>
@@ -43,7 +40,7 @@
                                 <option value="7">Buổi hòa nhạc</option>       <!-- Concert -->
                                 <option value="8">Khóa học ngắn hạn</option>   <!-- Short Course -->
                             </select>
-                           
+
                             </select>
                         </div>
                         <div class="mb-3">
@@ -74,8 +71,16 @@
                                 <input type="number" id="thoiLuongPhut" name="thoiLuongPhut" class="form-control" min="1" required>
                             </div>
                             <div class="col-md-6">
+                                <label for="organizerEmail" class="form-label">Email tổ chức</label>
+                                <input type="email" id="organizerEmail" name="organizerEmail"
+                                       class="form-control" 
+                                       value="${sessionScope.user.email}"
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
                                 <label for="maxParticipants" class="form-label">Số người tối đa</label>
                                 <input type="number" id="soNguoiToiDa" name="soNguoiToiDa"
+                                       placeholder="Tối đa 2,147,483,647 người"
                                        class="form-control" min="1" required>
                             </div>
                             <div class="col-12 text-end mt-4">

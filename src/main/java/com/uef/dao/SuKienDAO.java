@@ -13,8 +13,17 @@ import java.util.List;
  */
 public interface SuKienDAO {
 
-    List<SuKien> findAll() throws Exception;
-    
+    List<SuKien> getAll() throws Exception;
+
     void insert(SuKien e) throws Exception;
-    
+
+    SuKien findById(int id) throws Exception;
+
+    void update(SuKien sk) throws Exception;
+
+    void deleteById(int id) throws Exception;
+
+    List<SuKien> searchByTitle(String keyword);
+
+    List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc); 
 }

@@ -5,6 +5,7 @@
 package com.uef.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -31,6 +32,69 @@ public class SuKien {
     private String trangThai;
     private String thongTinNganHang;
     private String tenDanhMuc;
+    private String creatorEmail;
+    private Integer soLuongThamGia;
+    private Double saoTrungBinh;
+    private boolean daDanhGia;
+    private boolean chuaDienRa;
+    private String ngayGioHienThi;
+    private LocalDate ngayToChuc;
+
+    public String getNgayGioHienThi() {
+        return ngayGioHienThi;
+    }
+
+    public void setNgayGioHienThi(String ngayGioHienThi) {
+        this.ngayGioHienThi = ngayGioHienThi;
+    }
+
+    public LocalDate getNgayToChuc() {
+        return ngayToChuc;
+    }
+
+    public void setNgayToChuc(LocalDate ngayToChuc) {
+        this.ngayToChuc = ngayToChuc;
+    }
+
+    public boolean isDaDanhGia() {
+        return daDanhGia;
+    }
+
+    public void setDaDanhGia(boolean daDanhGia) {
+        this.daDanhGia = daDanhGia;
+    }
+
+    public boolean isChuaDienRa() {
+        return chuaDienRa;
+    }
+
+    public void setChuaDienRa(boolean chuaDienRa) {
+        this.chuaDienRa = chuaDienRa;
+    }
+
+    public Integer getSoLuongThamGia() {
+        return soLuongThamGia;
+    }
+
+    public void setSoLuongThamGia(Integer soLuongThamGia) {
+        this.soLuongThamGia = soLuongThamGia;
+    }
+
+    public Double getSaoTrungBinh() {
+        return saoTrungBinh;
+    }
+
+    public void setSaoTrungBinh(Double saoTrungBinh) {
+        this.saoTrungBinh = saoTrungBinh;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
 
     public String getTenDanhMuc() {
         return tenDanhMuc;
@@ -181,4 +245,3 @@ public class SuKien {
     }
 
 }
-

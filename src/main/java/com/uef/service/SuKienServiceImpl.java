@@ -32,12 +32,12 @@ public class SuKienServiceImpl implements SuKienService {
     @Override
     public List<SuKien> getAll() {
         try {
-            List<SuKien> events = suKienDAO.findAll();
-            System.out.println(">>> Service loaded events = " + events.size());
+            List<SuKien> events = suKienDAO.getAll();
             return events;
         } catch (Exception e) {
             throw new RuntimeException("Lỗi đọc sự kiện", e);
         }
+
     }
 
     @Override
@@ -65,5 +65,42 @@ public class SuKienServiceImpl implements SuKienService {
         } catch (Exception e) {
             throw new RuntimeException("Không lưu được ảnh", e);
         }
+    }
+
+    @Override
+    public SuKien findById(int id) {
+        try {
+            return suKienDAO.findById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi tìm sự kiện", e);
+        }
+    }
+
+    @Override
+    public void update(SuKien sk) {
+        try {
+            suKienDAO.update(sk);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi cập nhật sự kiện", e);
+        }
+    }
+
+    @Override
+    public void deleteById(int id) {
+        try {
+            suKienDAO.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi xóa sự kiện", e);
+        }
+    }
+
+    @Override
+    public List<SuKien> searchByTitle(String keyword) {
+        return suKienDAO.searchByTitle(keyword);
+    }
+
+    @Override
+    public List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc) {
+        return suKienDAO.getThongKeSuKienToChuc(maNguoiToChuc);
     }
 }

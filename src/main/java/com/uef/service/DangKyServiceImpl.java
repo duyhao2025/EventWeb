@@ -8,6 +8,7 @@ import com.uef.model.SuKien;
 import com.uef.until.DBConnection;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class DangKyServiceImpl implements DangKyService {
                     sk.setNgayGio(ts.toLocalDateTime());
                 }
                 sk.setTrangThai(rs.getString("trang_thai"));
-               
+
                 list.add(sk);
             }
         } catch (SQLException e) {
@@ -71,9 +72,11 @@ public class DangKyServiceImpl implements DangKyService {
                 SuKien sk = new SuKien();
                 sk.setMaSuKien(rs.getInt("ma_su_kien"));
                 sk.setTieuDe(rs.getString("tieu_de"));
+
                 Timestamp ts = rs.getTimestamp("ngay_gio");
                 if (ts != null) {
                     sk.setNgayGio(ts.toLocalDateTime());
+
                 }
                 sk.setTrangThai(rs.getString("trang_thai"));
                 return sk;
@@ -84,4 +87,5 @@ public class DangKyServiceImpl implements DangKyService {
         return null;
     }
 
+    
 }

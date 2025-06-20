@@ -13,8 +13,5 @@ import java.util.List;
  */
 public interface DanhMucService {
 
-    /**
-     * Lấy tất cả danh mục
-     */
     List<DanhMuc> getAll();
 }
