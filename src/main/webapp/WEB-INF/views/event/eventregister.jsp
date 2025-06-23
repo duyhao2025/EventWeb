@@ -87,12 +87,11 @@
         <div class="form-container">
             <h2>Đăng ký Sự kiện</h2>
             <form action="${pageContext.request.contextPath}/eventregister" method="post">
-                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên để " required>
+                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên " required>
                 <input type="email" name="email" placeholder="Email"  required/>
                 <input type="text" name="soDienThoai" placeholder="Số điện thoại" required>
                 <input type="submit" value="Đăng ký">
             </form>
-
             <c:if test="${not empty error}">
                 <p class="error">${error}</p>
             </c:if>

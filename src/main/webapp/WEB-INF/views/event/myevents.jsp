@@ -21,11 +21,11 @@
                                 
                                 <div class="mt-auto">
                                     <a href="${pageContext.request.contextPath}/events/edit/${event.maSuKien}"
-                                       class="btn btn-warning btn-sm">Sửa</a>
+                                       class="btn btn-warning btn-sm">Sửa sự kiện </a>
                                     <form action="${pageContext.request.contextPath}/events/delete/${event.maSuKien}"
                                           method="post" style="display:inline;"
                                           onsubmit="return confirm('Xác nhận xóa sự kiện?');">
-                                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">Xóa sự kiện</button>
                                     </form>
                                 </div>
                             </div>

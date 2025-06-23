@@ -33,6 +33,16 @@
         <script src="${pageContext.request.contextPath}/assets/js/load.js" type="text/javascript"></script>
         <title>Trang chủ sự kiện</title>
         <style>
+            .event-detail-panel {
+                opacity: 0;
+                transform: translateX(50px);
+                transition: all 0.3s ease-in-out;
+            }
+
+            .event-detail-panel.show {
+                opacity: 1;
+                transform: translateX(0);
+            }
             #categoryFilter {
                 border-top-left-radius: 4px;
                 border-bottom-left-radius: 4px;
@@ -305,7 +315,7 @@
                                             // So sánh email
                                             if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
                                         %>
-                                     
+
                                         <%
                                             }
                                         %>
@@ -328,7 +338,7 @@
                                 <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
                                 <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
                                 <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
-                                
+
                             </div>
                             <%
                                 } // end for
@@ -337,7 +347,7 @@
                             <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
                             <%
                                 } // end if
-                            %>
+%>
                         </div>
                     </div>
                 </div>
@@ -370,15 +380,28 @@
                 document.querySelectorAll(".event-detail-panel").forEach(el => {
                     if (el.id !== "detail-" + id) {
                         el.style.display = "none";
+                        el.classList.remove("show"); // Xóa hiệu ứng cũ nếu có
                     }
                 });
 
-                // Toggle panel được chọn
                 const panel = document.getElementById("detail-" + id);
+
+                // Nếu đang ẩn thì hiển thị với hiệu ứng
                 if (panel.style.display === "none" || panel.style.display === "") {
                     panel.style.display = "block";
+
+                    // Cho phép CSS kích hoạt hiệu ứng sau một chút (delay nhỏ để trigger transition)
+                    setTimeout(() => {
+                        panel.classList.add("show");
+                    }, 10);
                 } else {
-                    panel.style.display = "none";
+                    // Ẩn đi với hiệu ứng ngược
+                    panel.classList.remove("show");
+
+                    // Sau khi hiệu ứng ẩn chạy xong, tắt hẳn display
+                    setTimeout(() => {
+                        panel.style.display = "none";
+                    }, 300); // Thời gian trùng với transition 0.3s
                 }
             }
         </script>
@@ -452,7 +475,36 @@
                 }
             });
         </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const settingsIcon = document.querySelector('#settings-dropdown');
+                const dropdown = document.querySelector('.settings-dropdown');
 
+                if (settingsIcon && dropdown) {
+                    settingsIcon.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        // Toggle dropdown
+                        dropdown.classList.toggle('show');
+
+                        // Nếu hiển thị -> chạy animation từng item
+                        if (dropdown.classList.contains('show')) {
+                            const items = dropdown.querySelectorAll('.dropdown-item');
+                            items.forEach((item, index) => {
+                                item.style.animationDelay = `${index * 100}ms`;
+                            });
+                        } else {
+                            // Xóa delay khi ẩn
+                            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                                item.style.animation = 'none';
+                                item.offsetHeight; // trigger reflow
+                                item.style.animation = '';
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
         <footer>
             <!-- footer.jsp -->
             <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
