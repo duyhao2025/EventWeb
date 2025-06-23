@@ -54,15 +54,23 @@ public class SuKienDAOImpl implements SuKienDAO {
         """;
 
         List<SuKien> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 SuKien e = new SuKien();
                 e.setMaSuKien(rs.getInt("ma_su_kien"));
                 e.setTieuDe(rs.getString("tieu_de"));
                 e.setMoTa(rs.getString("mo_ta"));
                 e.setHinhAnh(rs.getString("hinh_anh"));
-                e.setNgayGio(rs.getTimestamp("ngay_gio").toLocalDateTime());
-                e.setHanDangKy(rs.getTimestamp("han_dang_ky").toLocalDateTime());
+
+                Timestamp tsNgayGio = rs.getTimestamp("ngay_gio");
+                e.setNgayGio(tsNgayGio != null ? tsNgayGio.toLocalDateTime() : null);
+
+                Timestamp tsHanDangKy = rs.getTimestamp("han_dang_ky");
+                e.setHanDangKy(tsHanDangKy != null ? tsHanDangKy.toLocalDateTime() : null);
+
                 e.setThoiLuongPhut(rs.getInt("thoi_luong_phut"));
                 e.setSoNguoiToiDa(rs.getInt("so_nguoi_toi_da"));
                 e.setDiaDiem(rs.getString("dia_diem"));

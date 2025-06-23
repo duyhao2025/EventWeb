@@ -16,9 +16,9 @@ import java.sql.SQLException;
  */
 public class DBConnection {
     // Thông tin kết nối: đổi theo cấu hình thực tế của bạn
-    private static final String JDBC_URL = "jdbc:sqlserver://localhost:1433;databaseName=WEB_EVENT;encrypt=true;trustServerCertificate=true";
-    private static final String DB_USER = "sa";
-    private static final String DB_PASSWORD = "Thangbatdiet123";
+    private static final String JDBC_URL = "jdbc:sqlserver://DESKTOP-FDA39SE:1433;databaseName=WEB_EVENT;encrypt=true;trustServerCertificate=true";
+    private static final String DB_USER = "tuannq";
+    private static final String DB_PASSWORD = "123456a@";
 
     static {
         try {

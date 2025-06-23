@@ -334,6 +334,29 @@
                                 <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
                                 <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
                                 <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
+                                <%
+                                    String diaChi = event.getDiaDiem();
+                                    String diaChiEncoded = "";
+                                    try {
+                                        diaChiEncoded = java.net.URLEncoder.encode(diaChi, "UTF-8");
+                                    } catch (Exception e) {
+                                        diaChiEncoded = "";
+                                    }
+                                %>
+
+                                <div style="width: 100%; height: 180px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 10px;">
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        frameborder="0"
+                                        style="border:0"
+                                        allowfullscreen
+                                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDxvgtArITjIRWjc7Ei5PGKyR8-na_9pV4&q=<%= diaChiEncoded %>">
+                                    </iframe>
+                                </div>
+
+
+
                                 
                             </div>
                             <%
