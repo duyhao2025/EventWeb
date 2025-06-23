@@ -223,4 +223,14 @@ public class SuKienController {
         model.addAttribute("myEvents", mine);
         return "event/myevents";  // mapped to /WEB-INF/views/event/myevents.jsp
     }
+
+    @GetMapping("/detail/{id}")
+    public String chiTietSuKien(@PathVariable("id") int id, Model model) {
+        SuKien suKien = suKienService.findById(id);
+        if (suKien == null) {
+            return "redirect:/demo"; // hoặc trả về 404.jsp
+        }
+        model.addAttribute("event", suKien);
+        return "event/detail"; // trỏ tới /WEB-INF/views/event/detail.jsp
+    }
 }

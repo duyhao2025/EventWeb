@@ -8,9 +8,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/WEB-INF/views/layout/header.jsp" />
 
-<div class="container my-5">
+
+<div class="container my-5" >
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Tạo sự kiện mới</h4>
@@ -22,7 +22,10 @@
                 <div class="row">
                     <!-- Cột trái -->
                     <div class="col-lg-6">
-
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Hình ảnh sự kiện</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
+                        </div>
                         <div class="mb-3">
                             <label for="title" class="form-label">Tên sự kiện</label>
                             <input type="text" class="form-control" id="tieuDe" name="tieuDe" placeholder="Nhập tên sự kiện" required>
@@ -95,4 +98,3 @@
     </div>
 </div>
 
-<jsp:include page="/WEB-INF/views/layout/footer.jsp" />

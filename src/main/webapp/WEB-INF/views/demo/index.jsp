@@ -4,6 +4,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 
@@ -91,9 +92,8 @@
             }
 
             .feed-wrapper {
-                max-width: 720px;
-                margin: 0 auto;
                 padding: 40px 20px;
+                width: 100%;
             }
 
             .event-card {
@@ -169,187 +169,97 @@
             .btn-register:hover {
                 background-color: #0056b3;
             }
+            .close-detail-btn {
+                position: absolute;
+                top: 10px;
+                right: 12px;
+                background: transparent;
+                border: none;
+                font-size: 24px;
+                font-weight: bold;
+                color: #555;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+
+            .close-detail-btn:hover {
+                color: #d00;
+            }
         </style>
     </head>
 
     <body class="newsfeed">
         <div class="container-fluid" id="wrapper">
-            <div class="row newsfeed-size">
-                <div class="col-md-12 newsfeed-right-side">
+            <div class="container" style="padding-top: 100px;">
+                <form action="${pageContext.request.contextPath}/events/list" method="get">
+                    <div class="input-group">
+                        <input type="text"
+                               id="searchBox"
+                               name="keyword"
+                               class="form-control rounded-start-pill ps-4"
+                               placeholder="Tìm kiếm sự kiện...">
+                        <button class="btn btn-outline-secondary rounded-end-pill"
+                                type="submit"
+                                style="width: 44px; height: 44px; font-size: 20px;">
+                            <i class="bx bx-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <div class="feed-wrapper w-100" style="max-width: 80%;">
 
-                    <nav class="navbar navbar-expand-lg shadow-sm sticky-top bg-white">
-                        <div class="container-fluid">
-                            <div class="d-flex w-100 align-items-center">
-                                <!-- Logo -->
-                                <a class="navbar-brand me-3" href="${pageContext.request.contextPath}/demo">
-                                    <img src="${pageContext.request.contextPath}/assets/images/logo-64x64.png"
-                                         width="40" alt="Logo">
+
+                    <%
+                        List<SuKien> list = (List<SuKien>) request.getAttribute("suKienList");
+                        if (list != null) {
+                            for (SuKien event : list) {
+                    %>
+                    <div class="event-card" data-title="<%= event.getTieuDe()%>" data-category="<%= event.getTenDanhMuc()%>">
+                        <img class="event-image" src="${pageContext.request.contextPath}/uploads/${event.hinhAnh}" alt="Hình sự kiện" />
+
+                        <div class="event-info">
+                            <div>
+                                <h3 class="event-title"> <%= event.getTieuDe()%></h3>
+                                <h3 class="event-title">Thể loại: <%= event.getTenDanhMuc()%></h3>
+                                <div class="event-description">
+                                    <strong>Email tổ chức:</strong> <%= event.getCreatorEmail()%>
+                                </div>
+
+                                <div class="event-dates">
+                                    Bắt đầu: <%= event.getNgayGio()%> <br/>
+                                    Hạn đăng ký: <%= event.getHanDangKy()%>
+                                </div> 
+                            </div>
+                            <div class="event-action">
+                                <%
+                                    // Lấy user từ session
+                                    User u = (User) session.getAttribute("user");
+                                    // So sánh email
+                                    if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
+                                %>
+
+                                <%
+                                    }
+                                %>
+                                <a href="${pageContext.request.contextPath}/events/detail/<%= event.getMaSuKien()%>" class="btn-detail">Chi tiết</a>
+                                <a href="${pageContext.request.contextPath}/eventregister" class="btn-register">
+                                    Đăng ký tham gia
                                 </a>
-
-                                <!-- Dropdown Danh mục -->
-                                <form action="${pageContext.request.contextPath}/events/filter" method="get" class="me-3">
-                                    <select id="categoryFilter" class="form-select" style="width: 150px;">
-                                        <option value="">Danh mục</option>
-                                        <option value="Hội thảo">Hội thảo</option>
-                                        <option value="Workshop">Workshop</option>
-                                        <option value="Cuộc thi">Cuộc thi</option>
-                                        <option value="Triển lãm">Triển lãm</option>
-                                        <option value="Hội thảo trực tuyến">Hội thảo trực tuyến</option>
-                                        <option value="Buổi giao lưu">Buổi giao lưu</option>
-                                        <option value="Buổi hòa nhạc">Buổi hòa nhạc</option>
-                                        <option value="Khóa học ngắn hạn">Khóa học ngắn hạn</option>
-                                    </select>
-                                </form>
-                                <!-- Search + Pencil -->
-                                <form action="${pageContext.request.contextPath}/events/list"
-                                      method="get"
-                                      class="d-flex flex-grow-1 me-3">
-                                    <div class="input-group">
-                                        <input type="text"
-                                               id="searchBox"
-                                               name="keyword"
-                                               class="form-control rounded-pill ps-4"
-                                               placeholder="Tìm kiếm sự kiện…">
-                                        <button class="btn btn-outline-secondary rounded-pill ms-2"
-                                                type="submit"
-                                                style="width: 44px; height: 44px;">
-                                            <i class="bx bx-search fs-4"></i>
-                                        </button>
-                                        <!-- Pencil icon to create -->
-                                        <a href="${pageContext.request.contextPath}/events/create"
-                                           class="btn btn-link ms-2"
-                                           style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;">
-                                            <i class="bx bx-pencil" style="font-size:2rem; line-height:1;"></i>
-                                        </a>
-                                    </div>
-                                </form>
-
-                                <!-- Right-side Icons -->
-                                <div class="d-flex align-items-center">
-
-                                    <a href="#" class="nav-link ps-3">
-                                        <img src="${pageContext.request.contextPath}/assets/images/users/user-4.jpg"
-                                             class="rounded-circle"
-                                             width="36"
-                                             style="object-fit: cover;"
-                                             alt="User">
-                                    </a>
-                                    <li class="nav-item s-nav nav-icon dropdown">
-                                        <a href="settings.html" data-toggle="dropdown" data-placement="bottom" data-title="Settings" class="nav-link settings-link rm-drop-mobile drop-w-tooltip" id="settings-dropdown"><img src="assets/images/icons/navbar/settings.png" class="nav-settings" alt="navbar icon"></a>
-                                        <div class="dropdown-menu dropdown-menu-right settings-dropdown shadow-sm" aria-labelledby="settings-dropdown">
-                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/user/profile">
-                                                <img src="assets/images/icons/settings/account.png" alt="Navbar icon"> Thông tin cá nhân</a>
-                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/settings-password">
-                                                <img src="assets/images/icons/settings/contact.png" alt="Navbar icon"> Đổi mật khẩu
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
-                                                <img src="assets/images/icons/navbar/logout.png" alt="Navbar icon"> Đăng xuất
-                                            </a>
-                                            <a class="dropdown-item" href="#">
-                                                <img src="assets/images/icons/navbar/gear-1.png" alt="Navbar icon"> Settings</a>
-                                        </div>
-                                    </li>
-                                </div>
                             </div>
-                        </div>
-                    </nav>
-
-
-                    <button type="button" class="btn nav-link" id="menu-toggle"><img src="assets/images/icons/theme/navs.png" alt="Navbar navs"></button>
-
-                </div>
-
-                <div class="row newsfeed-right-side-content mt-3">
-                    <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
-                        <div class="card newsfeed-user-card h-100">
-                            <ul class="list-group list-group-flush newsfeed-left-sidebar">
-                                <li class="list-group-item">
-                                    <h6>Home</h6>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center sd-active">
-                                    <a href="index.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/newsfeed.png" alt="newsfeed"> Trang chính</a>
-                                    <a href="#" class="newsfeedListicon"><i class='bx bx-dots-horizontal-rounded'></i></a>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="${pageContext.request.contextPath}/events/my_events" class="sidebar-item">
-                                        <img src="assets/images/icons/left-sidebar/event.png" alt="event"> Sự kiện bạn tổ chức
-                                    </a>
-                                    <span class="badge badge-primary badge-pill">3</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <a href="saved.html" class="sidebar-item"><img src="assets/images/icons/left-sidebar/saved.png" alt="saved"> Lưu sự kiện</a>
-                                    <span class="badge badge-primary badge-pill">8</span>
-                                </li>
-                            </ul>
                         </div>
                     </div>
-                    <div    class="col-md-6 second-section" id="page-content-wrapper">
-                        <div class="feed-wrapper">
 
-                            <%
-                                List<SuKien> list = (List<SuKien>) request.getAttribute("suKienList");
-                                if (list != null) {
-                                    for (SuKien event : list) {
-                            %>
-                            <div class="event-card" data-title="<%= event.getTieuDe()%>" data-category="<%= event.getTenDanhMuc()%>">
+                    <!-- PHẦN CHI TIẾT -->
 
-
-                                <div class="event-info">
-                                    <div>
-                                        <h3 class="event-title">Tên sự kiện: <%= event.getTieuDe()%></h3>
-                                        <h3 class="event-title">Thể loại: <%= event.getTenDanhMuc()%></h3>
-                                        <div class="event-description">
-                                            <strong>Email tổ chức:</strong> <%= event.getCreatorEmail()%>
-                                        </div>
-
-                                        <div class="event-dates">
-                                            Bắt đầu: <%= event.getNgayGio()%> <br/>
-                                            Hạn đăng ký: <%= event.getHanDangKy()%>
-                                        </div> 
-                                    </div>
-                                    <div class="event-action">
-                                        <%
-                                            // Lấy user từ session
-                                            User u = (User) session.getAttribute("user");
-                                            // So sánh email
-                                            if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
-                                        %>
-
-                                        <%
-                                            }
-                                        %>
-                                        <button class="btn-detail" onclick="toggleDetail('<%= event.getMaSuKien()%>')">Chi tiết</button>
-                                        <a href="${pageContext.request.contextPath}/eventregister" class="btn-register">
-                                            Đăng ký tham gia
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- PHẦN CHI TIẾT -->
-                            <div class="event-detail-panel" id="detail-<%= event.getMaSuKien()%>" style="display:none;">
-
-                                <h3><strong>Tên sự kiện:</strong> <%= event.getTieuDe()%></h3>
-                                <p><strong>Thể loại:</strong> <%= event.getTenDanhMuc()%></p>
-                                <p><strong>Mô tả:</strong> <%= event.getMoTa()%></p>
-                                <p><strong>Bắt đầu:</strong> <%= event.getNgayGio()%></p>
-                                <p><strong>Hạn đăng ký:</strong> <%= event.getHanDangKy()%></p>
-                                <p><strong>Thời lượng:</strong> <%= event.getThoiLuongPhut()%> phút</p>
-                                <p><strong>Số người tối đa:</strong> <%= event.getSoNguoiToiDa()%></p>
-                                <p><strong>Địa chỉ:</strong> <%= event.getDiaDiem()%></p>
-
-                            </div>
-                            <%
-                                } // end for
-                            } else {
-                            %>
-                            <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
-                            <%
-                                } // end if
+                    <%
+                        } // end for
+                    } else {
+                    %>
+                    <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
+                    <%
+                        } // end if
 %>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -363,7 +273,7 @@
         <!-- Optional -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script>
-                                            const CONTEXT_PATH = "${pageContext.request.contextPath}";
+            const CONTEXT_PATH = "${pageContext.request.contextPath}";
         </script>
         <script type="text/javascript">
             $("#menu-toggle").click(function (e) {
@@ -505,34 +415,7 @@
                 }
             });
         </script>
-        <footer>
-            <!-- footer.jsp -->
-            <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
-                <div class="container">
-                    <div class="row text-left">
-                        <div class="col-md-3">
-                            <h5 class="text-white mb-3">Về chúng tôi</h5>
-                            <p><a href="#" class="text-light">Giới thiệu</a></p>
-                            <p><a href="#" class="text-light">Bảng giá dịch vụ</a></p>
-                            <p><a href="#" class="text-light">Liên hệ quảng cáo</a></p>
-                        </div>
-                        <div class="col-md-3">
-                            <h5 class="text-white mb-3">Trợ giúp</h5>
-                            <p><a href="#" class="text-light">Liên hệ</a></p>
-                            <p><a href="#" class="text-light">Trung tâm trợ giúp</a></p>
-                            <p><a href="#" class="text-light">Quy định và Điều khoản</a></p>
-                        </div>
-                        <div class="col-md-3">
-                            <h5 class="text-white mb-3">Thông tin</h5>
-                            <p><a href="#" class="text-light">Quy chế hoạt động</a></p>
-                            <p><a href="#" class="text-light">Cơ chế giải quyết tranh chấp</a></p>
-                            <p><a href="#" class="text-light">Chính sách bảo mật thông tin</a></p>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </body>
 
 </html>
