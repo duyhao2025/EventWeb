@@ -16,7 +16,11 @@
             <input type="text" name="tieuDe" class="form-control"
                    value="${suKien.tieuDe}" required/>
         </div>
-
+        <div class="mb-3">
+            <label class="form-label">Mô Tả :</label>
+            <input type="text" name="moTa" class="form-control"
+                   value="${suKien.moTa}" required/>
+        </div>
         <!-- Thể loại -->
         <div class="mb-3">
             <label class="form-label">Thể loại</label>
@@ -66,7 +70,7 @@
                    value="${suKien.diaDiem}" required/>
         </div>
 
-        
+
 
         <!-- Nút -->
         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>

@@ -212,4 +212,15 @@ public class SuKienController {
         model.addAttribute("suKienList", suKienList);
         return "event/myevents"; // kiểm tra view nằm đúng trong /WEB-INF/views/event/myevents.jsp
     }
+
+    @GetMapping("/organized")
+    public String showMyEvents(Model model, HttpSession session) {
+        User current = (User) session.getAttribute("user");
+        if (current == null) {
+            return "redirect:/login";
+        }
+        List<SuKien> mine = suKienService.getByOrganizer(current.getMaNguoiDung());
+        model.addAttribute("myEvents", mine);
+        return "event/myevents";  // mapped to /WEB-INF/views/event/myevents.jsp
+    }
 }

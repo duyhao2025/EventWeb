@@ -29,4 +29,6 @@ public interface SuKienService {
     List<SuKien> searchByTitle(String keyword);
 
     List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc);
+
+    List<SuKien> getByOrganizer(int maNguoiToChuc);
 }

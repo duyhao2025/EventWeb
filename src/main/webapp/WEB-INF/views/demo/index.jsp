@@ -305,13 +305,7 @@
                                             // So sánh email
                                             if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
                                         %>
-                                        <a href="<%=request.getContextPath()%>/events/edit/<%=event.getMaSuKien()%>"
-                                           class="btn btn-warning btn-sm me-2">Sửa</a>
-                                        <form action="<%=request.getContextPath()%>/events/delete/<%=event.getMaSuKien()%>"
-                                              method="post" style="display:inline;"
-                                              onsubmit="return confirm('Xác nhận xóa sự kiện?');">
-                                            <button type="submit" class="btn btn-danger btn-sm me-2">Xóa</button>
-                                        </form>
+                                     
                                         <%
                                             }
                                         %>

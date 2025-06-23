@@ -103,4 +103,13 @@ public class SuKienServiceImpl implements SuKienService {
     public List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc) {
         return suKienDAO.getThongKeSuKienToChuc(maNguoiToChuc);
     }
+
+    @Override
+    public List<SuKien> getByOrganizer(int maNguoiToChuc) {
+        try {
+            return suKienDAO.findByOrganizer(maNguoiToChuc);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi lấy sự kiện của người tổ chức", e);
+        }
+    }
 }

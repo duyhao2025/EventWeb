@@ -25,5 +25,7 @@ public interface SuKienDAO {
 
     List<SuKien> searchByTitle(String keyword);
 
-    List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc); 
+    List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc);
+
+    List<SuKien> findByOrganizer(int maNguoiToChuc) throws Exception;
 }
