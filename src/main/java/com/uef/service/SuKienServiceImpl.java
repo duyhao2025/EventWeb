@@ -16,6 +16,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Service
 public class SuKienServiceImpl implements SuKienService {
@@ -28,6 +29,8 @@ public class SuKienServiceImpl implements SuKienService {
     public SuKienServiceImpl() throws Exception {
         Files.createDirectories(uploadDir);
     }
+    @Autowired
+    public JdbcTemplate jdbcTemplate;
 
     @Override
     public List<SuKien> getAll() {
@@ -87,10 +90,14 @@ public class SuKienServiceImpl implements SuKienService {
 
     @Override
     public void deleteById(int id) {
+        String sql1 = "DELETE FROM DangKy WHERE ma_su_kien = ?";
+        String sql2 = "DELETE FROM SuKien WHERE ma_su_kien = ?";
+
         try {
-            suKienDAO.deleteById(id);
+            jdbcTemplate.update(sql1, id);  // Xóa đăng ký
+            jdbcTemplate.update(sql2, id);  // Xóa sự kiện
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi xóa sự kiện", e);
+            throw new RuntimeException("Lỗi deleteById SuKien", e);
         }
     }
 

@@ -4,7 +4,7 @@ GO
 USE WEB_EVENT;
 GO
 
-CREATE TABLE users  (
+CREATE TABLE users (
     ma_nguoi_dung INT PRIMARY KEY IDENTITY(1,1),
     ho_ten NVARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -114,3 +114,7 @@ UPDATE DanhMuc SET ten_vi = N'Buổi giao lưu' WHERE ma_danh_muc = 6;
 UPDATE DanhMuc SET ten_vi = N'Buổi hòa nhạc' WHERE ma_danh_muc = 7;
 UPDATE DanhMuc SET ten_vi = N'Khóa học ngắn hạn' WHERE ma_danh_muc = 8;
 SELECT * FROM DanhMuc;
+ALTER TABLE DangKy ADD 
+    ho_ten NVARCHAR(100),
+    email VARCHAR(100),
+    so_dien_thoai VARCHAR(20);

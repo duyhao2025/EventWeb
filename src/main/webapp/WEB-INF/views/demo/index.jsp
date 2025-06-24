@@ -243,9 +243,9 @@
                                     }
                                 %>
                                 <a href="${pageContext.request.contextPath}/events/detail/<%= event.getMaSuKien()%>" class="btn-detail">Chi tiết</a>
-                                <a href="${pageContext.request.contextPath}/eventregister" class="btn-register">
-                                    Đăng ký tham gia
-                                </a>
+                                <a href="${pageContext.request.contextPath}/eventregister?suKienId=<%= event.getMaSuKien()%>">Đăng ký tham gia</a>
+
+
                             </div>
                         </div>
                     </div>

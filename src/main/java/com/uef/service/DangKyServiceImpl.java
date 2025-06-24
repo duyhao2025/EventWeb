@@ -4,6 +4,8 @@
  */
 package com.uef.service;
 
+import com.uef.dao.DangKyDAO;
+import com.uef.model.DangKy;
 import com.uef.model.SuKien;
 import com.uef.until.DBConnection;
 
@@ -11,11 +13,14 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Admin
  */
+@Service
 public class DangKyServiceImpl implements DangKyService {
 
     //Xem lịch sử tham gia
@@ -86,6 +91,21 @@ public class DangKyServiceImpl implements DangKyService {
         }
         return null;
     }
+    private final DangKyDAO dangKyDAO;
 
-    
+    @Autowired
+    public DangKyServiceImpl(DangKyDAO dangKyDAO) {
+        this.dangKyDAO = dangKyDAO;
+    }
+
+    @Override
+    public void dangKySuKien(DangKy dangKy) {
+        dangKyDAO.save(dangKy);
+    }
+
+    @Override
+    public List<DangKy> layDanhSachDangKyTheoSuKien(int maSuKien) {
+        return dangKyDAO.findBySuKienId(maSuKien);
+    }
+
 }

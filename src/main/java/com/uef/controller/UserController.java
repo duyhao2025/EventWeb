@@ -1,5 +1,6 @@
 package com.uef.controller;
 
+import com.uef.model.DangKy;
 import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
@@ -29,6 +30,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class UserController {
 
+    @Autowired
+    private DangKyService dangKyService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -133,6 +136,7 @@ public class UserController {
     public String processEventRegistration(@RequestParam("hoTen") String hoTen,
             @RequestParam("email") String email,
             @RequestParam("soDienThoai") String soDienThoai,
+            @RequestParam("suKienId") int suKienId,
             Model model,
             HttpServletRequest request) {
 
@@ -141,6 +145,15 @@ public class UserController {
                 model.addAttribute("error", "Sai định dạng email Gmail");
                 return "event/eventregister";
             }
+            // lưu vào bảng DangKy
+            DangKy dk = new DangKy();
+            dk.setMaSuKien(suKienId);
+            dk.setHoTen(hoTen);
+            dk.setEmail(email);
+            dk.setSoDienThoai(soDienThoai);
+            dk.setTrangThai("Đã đăng ký");
+            dangKyService.dangKySuKien(dk);
+
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
@@ -181,8 +194,13 @@ public class UserController {
         }
     }
 
-    private DangKyService dangKyService = new DangKyServiceImpl();
-//Thông tin cá nhân và Xem lịch sử sự kiện
+    @GetMapping("/events/manager")
+    public String hienThiQuanLyDangKy(@RequestParam("suKienId") int suKienId, Model model) {
+        List<DangKy> danhSach = dangKyService.layDanhSachDangKyTheoSuKien(suKienId);
+        model.addAttribute("danhSachDangKy", danhSach);
+        return "event/eventmanager";
+    }
+
 
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
@@ -217,5 +235,4 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
-    
 }

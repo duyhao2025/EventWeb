@@ -8,9 +8,11 @@ package com.uef.controller;
  *
  * @author Admin
  */
+import com.uef.model.DangKy;
 import com.uef.model.DanhMuc;
 import com.uef.model.SuKien;
 import com.uef.model.User;
+import com.uef.service.DangKyService;
 import com.uef.service.DanhMucService;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
@@ -233,4 +235,8 @@ public class SuKienController {
         model.addAttribute("event", suKien);
         return "event/detail"; // trỏ tới /WEB-INF/views/event/detail.jsp
     }
+    @Autowired
+    private DangKyService dangKyService;
+
+    
 }

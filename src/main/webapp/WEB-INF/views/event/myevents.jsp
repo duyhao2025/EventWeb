@@ -52,8 +52,9 @@
                                         <h5 class="card-title">${event.tieuDe}</h5>
 
                                         <div class="mt-auto">
-                                            <a href="${pageContext.request.contextPath}/events/my_events"
-                                               class="btn btn-warning btn-sm">Quản lý sự kiện</a>
+                                            <a href="${pageContext.request.contextPath}/events/manager?suKienId=${event.maSuKien}">
+                                                Quản lý sự kiện
+                                            </a>
                                             <a href="${pageContext.request.contextPath}/events/edit/${event.maSuKien}"
                                                class="btn btn-warning btn-sm">Sửa thông tin sự kiện</a>
                                             <form action="${pageContext.request.contextPath}/events/delete/${event.maSuKien}"
@@ -71,7 +72,7 @@
 
                 <!-- Tab 2: Form tạo sự kiện -->
                 <div class="tab-pane fade" id="event-create" role="tabpanel" aria-labelledby="create-tab">
-                    
+
                     <jsp:include page="/WEB-INF/views/event/create.jsp"/>
                     <%-- Hoặc bạn có thể paste thẳng form ở đây nếu không có file riêng --%>
                 </div>
