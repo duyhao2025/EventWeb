@@ -130,8 +130,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void eventRegisterUser(String hoTen, String email, String password, String soDienThoai) {
-        if (findByEmail(email) != null) {
-            throw new RuntimeException("Email đã tồn tại. Vui lòng chọn email khác.");
+        email = email.trim().toLowerCase();
+        User existing = findByEmail(email);
+        if (existing != null) {
+            System.out.println("User đã tồn tại, không cần thêm.");
+            return; // hoặc update thông tin nếu muốn
         }
 
         User user = new User();

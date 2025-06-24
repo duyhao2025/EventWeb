@@ -1,0 +1,34 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
+package com.uef.service;
+
+import com.uef.model.SuKien;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author Admin
+ */
+public interface SuKienService {
+
+    List<SuKien> getAll();
+
+    void create(SuKien sukien, MultipartFile file);
+
+    String saveImage(MultipartFile file);
+
+    SuKien findById(int id);
+
+    void update(SuKien sk);
+
+    void deleteById(int id);
+
+    List<SuKien> searchByTitle(String keyword);
+
+    List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc);
+
+    List<SuKien> getByOrganizer(int maNguoiToChuc);
+}

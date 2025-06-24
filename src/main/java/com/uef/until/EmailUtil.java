@@ -1,5 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.uef.until;
 
+/**
+ *
+ * @author Admin
+ */
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -10,6 +18,7 @@ import javax.mail.internet.*;
 import javax.servlet.http.HttpServletRequest;
 
 public class EmailUtil {
+
     private static final String FROM_EMAIL = "zackerman261120@gmail.com";
     private static final String PASSWORD = "vmwu feox povx qmxx";
 
@@ -78,10 +87,10 @@ public class EmailUtil {
     }
 
     public static String generateQrEmailBody(String hoTen, String code, String ngayHetHan, String qrImagePath, HttpServletRequest request) {
-        String qrUrl = request.getScheme() + "://" +
-                       request.getServerName() + ":" +
-                       request.getServerPort() +
-                       request.getContextPath() + "/" + qrImagePath;
+        String qrUrl = request.getScheme() + "://"
+                + request.getServerName() + ":"
+                + request.getServerPort()
+                + request.getContextPath() + "/" + qrImagePath;
         return buildQrEmailBody(hoTen, code, ngayHetHan, qrUrl, false);
     }
 }

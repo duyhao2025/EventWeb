@@ -4,6 +4,7 @@
  */
 package com.uef.service;
 
+import com.uef.model.DangKy;
 import com.uef.model.SuKien;
 import java.util.List;
 
@@ -12,10 +13,14 @@ import java.util.List;
  * @author Admin
  */
 public interface DangKyService {
-    
 
-    public List<SuKien> getTatCaSuKien(int maNguoiDung);
     void huyDangKy(int maNguoiDung, int maSuKien);
+
     SuKien getSuKienById(int maSuKien);
-    public List<SuKien> getTatCaSuKien();
+
+    public List<SuKien> getLichSuThamGia(int maNguoiDung);
+
+    void dangKySuKien(DangKy dangKy);
+
+    List<DangKy> layDanhSachDangKyTheoSuKien(int maSuKien);
 }

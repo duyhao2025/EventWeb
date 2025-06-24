@@ -7,6 +7,8 @@
 
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -63,9 +65,10 @@
                 width: 100%;
                 padding: 13px;
                 background-color: #e91e63;
-                border: none;
                 color: white;
                 font-weight: bold;
+                font-size: 16px;
+                border: none;
                 border-radius: 6px;
                 cursor: pointer;
                 transition: background 0.3s ease;
@@ -75,37 +78,35 @@
                 background-color: #d81b60;
             }
 
-            .message {
-                text-align: center;
+            .error {
                 color: red;
-                margin-bottom: 15px;
-            }
-
-            .warning {
                 text-align: center;
-                color: orange;
-                margin-bottom: 15px;
+                margin-top: 12px;
             }
         </style>
     </head>
-    <body>
+    <body style="margin:0; padding:0; background: url('https://anhdephd.vn/wp-content/uploads/2022/05/background-dep.jpg') no-repeat center center fixed; background-size: cover; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+    <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+
+    <!-- Wrapper để căn giữa -->
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 90vh;">
         <div class="form-container">
-            <h2>Đăng ký tham gia sự kiện</h2>
-
-            <c:if test="${not empty error}">
-                <div class="message">${error}</div>
-            </c:if>
-            <c:if test="${not empty warning}">
-                <div class="warning">${warning}</div>
-            </c:if>
-
+            <h2>Đăng ký Sự kiện</h2>
             <form action="${pageContext.request.contextPath}/eventregister" method="post">
-                <input type="text" name="hoTen" placeholder="Họ tên" required />
+                <input type="hidden" name="suKienId" value="${param.suKienId}">
+                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên" required>
                 <input type="email" name="email" placeholder="Email" required />
-                <input type="text" name="soDienThoai" placeholder="Số điện thoại" required />
-                <input type="submit" value="Đăng ký" />
+                <input type="text" name="soDienThoai" placeholder="Số điện thoại" required>
+                <input type="submit" value="Đăng ký">
             </form>
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
         </div>
-    </body>
-</html>
+    </div>
 
+    
+</body>
+
+</html>

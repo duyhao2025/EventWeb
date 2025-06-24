@@ -1,9 +1,11 @@
 package com.uef.controller;
 
+import com.uef.model.DangKy;
 import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
 import com.uef.service.DangKyServiceImpl;
+import com.uef.service.SuKienService;
 import com.uef.service.UserService;
 import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
@@ -29,15 +31,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
     @Autowired
+    private DangKyService dangKyService;
+    @Autowired
     private UserService userService;
+    @Autowired
+    private SuKienService suKienService;
 
     // GET: Hiển thị form đăng nhập
     @GetMapping("/demo")
     public String showDemo(HttpSession session, Model model) {
-        // Đẩy thông tin user (đã login) vào model để JSP có thể hiện avatar…
-        User u = (User) session.getAttribute("currentUser");
+        // Không còn kiểm tra session → ai cũng vào được demo
+        User u = (User) session.getAttribute("user");
         model.addAttribute("user", u);
-        return "demo/index";    // ← trỏ tới /WEB-INF/views/demo/index.jsp
+
+        List<SuKien> event = suKienService.getAll();
+        model.addAttribute("suKienList", event);
+
+        return "demo/index";
     }
 
     // POST: Xử lý đăng nhập
@@ -102,33 +112,48 @@ public class UserController {
         out.print(name);
         out.flush();
     }
+// Đăng xuất
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
+// Đăng ký tham gia sự kiện
 
     @GetMapping("/eventregister")
-    public String showEventRegistrationForm() {
+    public String showEventRegistrationForm(HttpServletRequest request, Model model) {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("email", user.getEmail());
         return "event/eventregister";
     }
 
-    // Xử lý form đăng ký tham gia sự kiện
     @PostMapping("/eventregister")
     public String processEventRegistration(@RequestParam("hoTen") String hoTen,
             @RequestParam("email") String email,
             @RequestParam("soDienThoai") String soDienThoai,
+            @RequestParam("suKienId") int suKienId,
             Model model,
             HttpServletRequest request) {
 
         try {
-            
             if (!email.toLowerCase().endsWith("@gmail.com")) {
-            model.addAttribute("error", "Sai định dạng email Gmail");
-            return "event/eventregister";
+                model.addAttribute("error", "Sai định dạng email Gmail");
+                return "event/eventregister";
             }
-            
+            // lưu vào bảng DangKy
+            DangKy dk = new DangKy();
+            dk.setMaSuKien(suKienId);
+            dk.setHoTen(hoTen);
+            dk.setEmail(email);
+            dk.setSoDienThoai(soDienThoai);
+            dk.setTrangThai("Đã đăng ký");
+            dangKyService.dangKySuKien(dk);
+
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
@@ -142,27 +167,25 @@ public class UserController {
 
             String qrImagePath = QRCodeGenerator.generateQRCodeImage(qrContent, request);
 
-        
-        try {
-            String realPath = request.getServletContext().getRealPath("/") + qrImagePath;
-            EmailUtil.sendEmailWithEmbeddedImage(
-                email,
-                "Xác nhận đăng ký sự kiện",
-                hoTen,
-                code,
-                ngayHetHan,
-                realPath
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("warning", "Đăng ký thành công nhưng không gửi được email xác nhận.");
-        }
-
+            try {
+                String realPath = request.getServletContext().getRealPath("/") + qrImagePath;
+                EmailUtil.sendEmailWithEmbeddedImage(
+                        email,
+                        "Xác nhận đăng ký sự kiện",
+                        hoTen,
+                        code,
+                        ngayHetHan,
+                        realPath
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                model.addAttribute("warning", "Đăng ký thành công nhưng không gửi được email xác nhận.");
+            }
 
             model.addAttribute("code", code);
             model.addAttribute("ngayHetHan", ngayHetHan);
             model.addAttribute("qrImagePath", qrImagePath);
-            
+
             return "event/success";
 
         } catch (Exception e) {
@@ -171,7 +194,13 @@ public class UserController {
         }
     }
 
-    private DangKyService dangKyService = new DangKyServiceImpl();
+    @GetMapping("/events/manager")
+    public String hienThiQuanLyDangKy(@RequestParam("suKienId") int suKienId, Model model) {
+        List<DangKy> danhSach = dangKyService.layDanhSachDangKyTheoSuKien(suKienId);
+        model.addAttribute("danhSachDangKy", danhSach);
+        return "event/eventmanager";
+    }
+
 
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
@@ -183,13 +212,12 @@ public class UserController {
         User user = userService.findById(loggedUser.getMaNguoiDung());
         model.addAttribute("user", user);
 
-        List<SuKien> history = dangKyService.getTatCaSuKien(user.getMaNguoiDung());
+        List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
         model.addAttribute("events", history);
-        model.addAttribute("danhSachSuKien", history);
-        model.addAttribute("today", LocalDate.now());
 
-        return "event/eventcancel";
+        return "user/profile";
     }
+//Thông tin cá nhân và Xem lịch sử sự kiện
 
     @PostMapping("/user/profile")
     public String updateProfile(@ModelAttribute("user") User user,
@@ -206,60 +234,5 @@ public class UserController {
         redirectAttributes.addFlashAttribute("msg", "Cập nhật thành công!");
         return "redirect:/user/profile";
     }
-    
-    
-        @GetMapping("/event/list")
-        public String showEventListPage(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
 
-         List<SuKien> danhSachSuKien = dangKyService.getTatCaSuKien();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        for (SuKien sk : danhSachSuKien) {
-        if (sk.getNgayToChuc() != null) {
-            sk.setChuaDienRa(sk.getNgayToChuc().isAfter(LocalDate.now()));
-        } else {
-            sk.setChuaDienRa(false); 
-        }
-    }
-
-        model.addAttribute("danhSachSuKien", danhSachSuKien);
-        model.addAttribute("today", LocalDate.now());
-
-        return "event/eventlist";
-}
-
-        @PostMapping("/event/list")
-        public String cancelRegistration(@RequestParam("id") int maSuKien,
-                                         HttpSession session,
-                                         RedirectAttributes redirectAttributes) {
-            User user = (User) session.getAttribute("user");
-            if (user == null) return "redirect:/login";
-
-            SuKien sk = dangKyService.getSuKienById(maSuKien);
-            if (sk == null) {
-                redirectAttributes.addFlashAttribute("error", "Sự kiện không tồn tại.");
-                return "redirect:/event/list";
-            }
-
-            LocalDate today = LocalDate.now();
-            if (sk.getNgayToChuc().isAfter(today)) {
-                dangKyService.huyDangKy(user.getMaNguoiDung(), maSuKien);
-                redirectAttributes.addFlashAttribute("msg", "Hủy đăng ký thành công.");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Không thể hủy vì sự kiện đã diễn ra hoặc đang diễn ra.");
-            }
-
-            return "redirect:/event/list";
-        }
-        @GetMapping("/event/map")
-            public String showEventMapPage(@RequestParam("id") int maSuKien, Model model) {
-            SuKien sk = dangKyService.getSuKienById(maSuKien);
-            if (sk == null) {
-                model.addAttribute("error", "Không tìm thấy sự kiện");
-                return "redirect:/eventregister";
-            }
-            model.addAttribute("diaChi", sk.getDiaChi());
-            return "event/eventmap";
-        }
 }

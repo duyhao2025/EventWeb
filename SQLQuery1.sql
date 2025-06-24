@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-CREATE DATABASE WEB_EVENT
-=======
-﻿CREATE DATABASE WEB_EVENT
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
-GO
-
+﻿
 USE WEB_EVENT;
 GO
 
-CREATE TABLE users  (
+CREATE TABLE users (
     ma_nguoi_dung INT PRIMARY KEY IDENTITY(1,1),
     ho_ten NVARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -22,7 +16,7 @@ CREATE TABLE users  (
 
 CREATE TABLE DanhMuc (
     ma_danh_muc INT PRIMARY KEY IDENTITY(1,1),
-    ten_vi NVARCHAR(100),
+    ten_vi NVARCHAR(100) COLLATE Vietnamese_CI_AS,
     ten_en NVARCHAR(100)
 );
 
@@ -74,7 +68,7 @@ CREATE TABLE DanhGia (
     nhan_xet NVARCHAR(MAX),
     ngay_danh_gia DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
-   FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
+    FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
 );
 
 
@@ -98,8 +92,27 @@ CREATE TABLE NgonNguDaiDien (
     ma_nguoi_dung INT PRIMARY KEY,
     ngon_ngu NVARCHAR(10) CHECK (ngon_ngu IN ('vi', 'en')) DEFAULT 'vi',
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
-<<<<<<< HEAD
+
 );
-=======
-);
->>>>>>> c6c8562f641f0ec4540f2826d8900f6057d052be
+INSERT INTO DanhMuc(ten_vi, ten_en) VALUES
+  (N'Hội thảo',            'Conference'),
+  (N'Workshop',            'Workshop'),
+  (N'Cuộc thi',            'Competition'),
+  (N'Triển lãm',           'Exhibition'),
+  (N'Hội thảo trực tuyến',  'Webinar'),
+  (N'Buổi giao lưu',       'Networking Event'),
+  (N'Buổi hòa nhạc',       'Concert'),
+  (N'Khóa học ngắn hạn',    'Short Course');
+ UPDATE DanhMuc SET ten_vi = N'Hội thảo' WHERE ma_danh_muc = 1;
+UPDATE DanhMuc SET ten_vi = N'Workshop' WHERE ma_danh_muc = 2;
+UPDATE DanhMuc SET ten_vi = N'Cuộc thi' WHERE ma_danh_muc = 3;
+UPDATE DanhMuc SET ten_vi = N'Triển lãm' WHERE ma_danh_muc = 4;
+UPDATE DanhMuc SET ten_vi = N'Hội thảo trực tuyến' WHERE ma_danh_muc = 5;
+UPDATE DanhMuc SET ten_vi = N'Buổi giao lưu' WHERE ma_danh_muc = 6;
+UPDATE DanhMuc SET ten_vi = N'Buổi hòa nhạc' WHERE ma_danh_muc = 7;
+UPDATE DanhMuc SET ten_vi = N'Khóa học ngắn hạn' WHERE ma_danh_muc = 8;
+SELECT * FROM DanhMuc;
+ALTER TABLE DangKy ADD 
+    ho_ten NVARCHAR(100),
+    email VARCHAR(100),
+    so_dien_thoai VARCHAR(20);

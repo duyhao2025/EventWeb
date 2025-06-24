@@ -51,12 +51,14 @@
         </style>
     </head>
     <body>
+        <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+        <div style="display: flex; align-items: center; justify-content: center; min-height: 90vh;">
         <div class="success-box">
             <h2>🎉 Bạn đã đăng ký thành công!</h2>
             <p>Mã xác nhận: <strong>${code}</strong></p>
             <p>Ngày hết hạn: <strong>${ngayHetHan}</strong></p>
             <p><img src="${pageContext.request.contextPath}/${qrImagePath}" alt="QR Code" width="250"/></p>
         </div>
+        </div>
     </body>
 </html>
-
