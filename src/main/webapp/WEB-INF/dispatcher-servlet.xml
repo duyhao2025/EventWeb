@@ -23,7 +23,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
         <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=WEB_EVENT;encrypt=false"/>
         <property name="username" value="sa"/>
-        <property name="password" value="Thangbatdiet123"/>
+        <property name="password" value="zxc"/>
     </bean>
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
@@ -39,4 +39,21 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
             </list>
         </property>
     </bean>
+    <!-- Cho phép Spring MVC đọc file đa ngôn ngữ -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <!-- Xác định Locale theo session -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="vi"/>
+    </bean>
+
+    <!-- Interceptor bắt param ?lang= -->
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang"/>
+        </bean>
+    </mvc:interceptors>
 </beans>
