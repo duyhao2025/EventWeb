@@ -1,22 +1,18 @@
 package com.uef.controller;
 
 import com.uef.model.DangKy;
-import com.uef.model.HistoryItem;
 import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
-import com.uef.service.DangKyServiceImpl;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
 import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,7 +20,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -154,6 +152,11 @@ public class UserController {
             dk.setEmail(email);
             dk.setSoDienThoai(soDienThoai);
             dk.setTrangThai("Đã đăng ký");
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
+                return "redirect:/login";
+            }
+            dk.setMaNguoiDung(user.getMaNguoiDung());
             dangKyService.dangKySuKien(dk);
 
             String code = "CONF" + System.currentTimeMillis();
@@ -213,8 +216,8 @@ public class UserController {
         User user = userService.findById(loggedUser.getMaNguoiDung());
         model.addAttribute("user", user);
 
-        List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
-        model.addAttribute("events", history);
+        List<SuKien> historyList = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
+        model.addAttribute("history", historyList);
 
         return "user/profile";
     }
@@ -243,24 +246,25 @@ public class UserController {
             return "redirect:/login";
         }
 
-        // Lấy tất cả bản ghi Đăng ký của user
-        List<DangKy> regs = dangKyService.getRegistrationsByUser(user.getMaNguoiDung());
+        // 1) Lấy tất cả bản ghi đăng ký của user
+        List<DangKy> regs = dangKyService.layDanhSachDangKyTheoSuKien(user.getMaNguoiDung());
+        //    (Nếu phương thức của bạn đặt tên khác, hãy chỉnh lại cho phù hợp.)
 
-        // Nếu bạn muốn hiển thị thêm thông tin sự kiện (tên, thể loại, ngày giờ)
-        // thì map mỗi DangKy -> một DTO nhỏ
-        List<HistoryItem> history = regs.stream().map(dk -> {
+        // 2) Map mỗi DangKy -> một Map nhỏ chứa thông tin cần thiết
+        List<Map<String, Object>> history = regs.stream().map(dk -> {
             SuKien sk = suKienService.findById(dk.getMaSuKien());
-            return new HistoryItem(
-                    sk.getMaSuKien(),
-                    sk.getTieuDe(),
-                    sk.getTenDanhMuc(),
-                    sk.getNgayGio(),
-                    sk.getHanDangKy(),
-                    dk.getTrangThai()
-            );
+            Map<String, Object> m = new HashMap<>();
+            m.put("maSuKien", sk.getMaSuKien());
+            m.put("tieuDe", sk.getTieuDe());
+            m.put("tenDanhMuc", sk.getTenDanhMuc());
+            m.put("ngayGio", sk.getNgayGio());
+            m.put("hanDangKy", sk.getHanDangKy());
+            m.put("trangThai", dk.getTrangThai());
+            return m;
         }).collect(Collectors.toList());
 
         model.addAttribute("history", history);
-        return "user/history";
+        return "user/profile";
     }
+
 }

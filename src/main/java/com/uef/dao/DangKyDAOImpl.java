@@ -43,12 +43,17 @@ public class DangKyDAOImpl implements DangKyDAO {
 
     @Override
     public void save(DangKy dangKy) {
-        String sql = "INSERT INTO DangKy (ho_ten, email, so_dien_thoai, ma_su_kien, trang_thai) VALUES (?, ?, ?, ?, ?)";
+        String sql = """
+        INSERT INTO DangKy 
+          (ho_ten, email, so_dien_thoai, ma_su_kien, ma_nguoi_dung, trang_thai) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    """;
         jdbcTemplate.update(sql,
                 dangKy.getHoTen(),
                 dangKy.getEmail(),
                 dangKy.getSoDienThoai(),
                 dangKy.getMaSuKien(),
+                dangKy.getMaNguoiDung(), // <-- thêm dòng này
                 dangKy.getTrangThai());
     }
 

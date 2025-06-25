@@ -166,51 +166,46 @@
                 <c:if test="${empty history}">
                     <div class="alert alert-info">Bạn chưa tham gia sự kiện nào.</div>
                 </c:if>
-
-                <div class="list-group">
-                    <c:forEach var="item" items="${history}">
-                        <div class="list-group-item d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5>${item.tieuDe}</h5>
-                                <small>Thể loại: ${item.tenDanhMuc}</small><br/>
-                                <small>Bắt đầu: ${item.ngayGio}</small><br/>
-                                <small>Hạn đăng ký: ${item.hanDangKy}</small>
-                            </div>
-                            <span 
-                                class="badge rounded-pill 
-                                ${item.trangThai=='Đã đăng ký' ? 'bg-primary' 
-                                  : item.trangThai=='Đã hủy' ? 'bg-danger' 
-                                  : 'bg-secondary'}">
-                                    ${item.trangThai}
-                                </span>
-                            </div>
+                <c:if test="${not empty history}">
+                    <ul class="list-group">
+                        <c:forEach var="item" items="${history}">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div>
+                                    <strong>${item.tieuDe}</strong><br/>
+                                    <small>Thể loại: ${item.tenDanhMuc}</small><br/>
+                                    <small>Bắt đầu: ${item.ngayGio}</small><br/>
+                                    <small>Hạn đăng ký: ${item.hanDangKy}</small>
+                                </div>
+                                <span class="badge bg-secondary">${item.trangThai}</span>
+                            </li>
                         </c:forEach>
-                    </div>
-                </div>
-
-                <div class="tab-content">
-                    <h2>Sự kiện yêu thích của bạn</h2>
-                    <p>Hiển thị danh sách sự kiện đã lưu hoặc yêu thích ở đây.</p>
-
-                </div>
+                    </ul>
+                </c:if>
             </div>
-            <script>
-                function showTab(index) {
-                    const tabs = document.querySelectorAll(".tab");
-                    const contents = document.querySelectorAll(".tab-content");
-                    tabs.forEach((tab, i) => {
-                        tab.classList.toggle("active", i === index);
-                        contents[i].classList.toggle("active", i === index);
-                    });
-                }
 
-                document.getElementById("editBtn").addEventListener("click", function () {
-                    document.querySelectorAll("input, select").forEach(el => el.removeAttribute("readonly"));
-                    document.querySelector("select").removeAttribute("disabled");
-                    document.getElementById("saveBtn").style.display = "block";
-                    this.style.display = "none";
+            <div class="tab-content">
+                <h2>Sự kiện yêu thích của bạn</h2>
+                <p>Hiển thị danh sách sự kiện đã lưu hoặc yêu thích ở đây.</p>
+
+            </div>
+        </div>
+        <script>
+            function showTab(index) {
+                const tabs = document.querySelectorAll(".tab");
+                const contents = document.querySelectorAll(".tab-content");
+                tabs.forEach((tab, i) => {
+                    tab.classList.toggle("active", i === index);
+                    contents[i].classList.toggle("active", i === index);
                 });
-            </script>
-            <jsp:include page="/WEB-INF/views/layout/footer.jsp" />
-        </body>
-    </html>
+            }
+
+            document.getElementById("editBtn").addEventListener("click", function () {
+                document.querySelectorAll("input, select").forEach(el => el.removeAttribute("readonly"));
+                document.querySelector("select").removeAttribute("disabled");
+                document.getElementById("saveBtn").style.display = "block";
+                this.style.display = "none";
+            });
+        </script>
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp" />
+    </body>
+</html>

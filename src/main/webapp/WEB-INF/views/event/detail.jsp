@@ -1,8 +1,24 @@
+<%@page import="java.io.UnsupportedEncodingException"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="com.uef.model.SuKien"%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+<%
+    // Lấy object SuKien mà Controller đã đặt vào attribute "event"
+    SuKien event = (SuKien) request.getAttribute("event");
+    String diaChiEncoded = "";
+
+    if (event != null && event.getDiaDiem() != null && !event.getDiaDiem().isEmpty()) {
+        try {
+            diaChiEncoded = URLEncoder.encode(event.getDiaDiem(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // Nếu có lỗi encode, chỉ để chuỗi rỗng
+            diaChiEncoded = "";
+        }
+    }
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -69,7 +85,15 @@
                 <p><strong>Thời lượng:</strong> ${event.thoiLuongPhut} phút</p>
                 <p><strong>Số người tối đa:</strong> ${event.soNguoiToiDa}</p>
                 <p><strong>Địa chỉ:</strong> ${event.diaDiem}</p>
-                <a href="${pageContext.request.contextPath}/demo" class="btn btn-secondary btn-back">← Quay lại</a>
+                <!-- Nhúng Google Map dựa trên địa chỉ đã encode -->
+                <div style="width:100%; height:500px; border-radius:10px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin-top:10px;">
+                    <iframe
+                        width="100%" height="100%" frameborder="0" style="border:0"
+                        allowfullscreen
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDxvgtArITjIRWjc7Ei5PGKyR8-na_9pV4
+                        &q=<%= diaChiEncoded%>">
+                    </iframe>
+                </div>
             </div>
         </div>
 

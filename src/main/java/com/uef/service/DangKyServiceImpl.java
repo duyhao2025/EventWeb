@@ -23,34 +23,42 @@ import org.springframework.stereotype.Service;
 @Service
 public class DangKyServiceImpl implements DangKyService {
 
-    //Xem lịch sử tham gia
+   
     @Override
     public List<SuKien> getLichSuThamGia(int maNguoiDung) {
+        String sql = """
+            SELECT 
+              s.ma_su_kien,
+              s.tieu_de,
+              d.ten_vi        AS tenDanhMuc,
+              s.ngay_gio,
+              s.han_dang_ky,
+              dk.trang_thai
+            FROM DangKy dk
+            JOIN SuKien s ON dk.ma_su_kien = s.ma_su_kien
+            LEFT JOIN DanhMuc d ON s.ma_danh_muc = d.ma_danh_muc
+            WHERE dk.ma_nguoi_dung = ?
+            ORDER BY s.ngay_gio DESC
+        """;
+
         List<SuKien> list = new ArrayList<>();
-        String sql = "SELECT s.*, "
-                + "CASE WHEN dg.danh_gia_id IS NOT NULL THEN 1 ELSE 0 END AS daDanhGia "
-                + "FROM DangKy dk "
-                + "JOIN SuKien s ON dk.ma_su_kien = s.ma_su_kien "
-                + "LEFT JOIN DanhGia dg ON dg.ma_nguoi_dung = dk.ma_nguoi_dung AND dg.ma_su_kien = dk.ma_su_kien "
-                + "WHERE dk.ma_nguoi_dung = ? ORDER BY s.ngay_gio DESC";
-
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, maNguoiDung);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                SuKien sk = new SuKien();
-                sk.setMaSuKien(rs.getInt("ma_su_kien"));
-                sk.setTieuDe(rs.getString("tieu_de"));
-                Timestamp ts = rs.getTimestamp("ngay_gio");
-                if (ts != null) {
-                    sk.setNgayGio(ts.toLocalDateTime());
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SuKien sk = new SuKien();
+                    sk.setMaSuKien(rs.getInt("ma_su_kien"));
+                    sk.setTieuDe(rs.getString("tieu_de"));
+                    sk.setTenDanhMuc(rs.getString("tenDanhMuc"));
+                    sk.setNgayGio(rs.getTimestamp("ngay_gio").toLocalDateTime());
+                    sk.setHanDangKy(rs.getTimestamp("han_dang_ky").toLocalDateTime());
+                    sk.setTrangThai(rs.getString("trang_thai"));
+                    list.add(sk);
                 }
-                sk.setTrangThai(rs.getString("trang_thai"));
-
-                list.add(sk);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Lỗi lấy lịch sử tham gia", e);
         }
         return list;
     }

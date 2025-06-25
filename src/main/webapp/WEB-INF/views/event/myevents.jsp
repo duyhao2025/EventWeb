@@ -100,20 +100,20 @@
                                                 <!-- Quản lý -->
                                                 <a href="${pageContext.request.contextPath}/events/manager?suKienId=${event.maSuKien}"
                                                    class="btn btn-outline-primary btn-sm">
-                                                    <i class="bx bx-cog me-1"></i>Quản lý
+                                                    <i class="bx bx-cog me-1"></i>Quản lý sự kiện
                                                 </a>
 
                                                 <!-- Sửa -->
                                                 <a href="${pageContext.request.contextPath}/events/edit/${event.maSuKien}"
                                                    class="btn btn-primary btn-sm">
-                                                    <i class="bx bx-edit-alt me-1"></i>Sửa
+                                                    <i class="bx bx-edit-alt me-1"></i>Sửa thông tin
                                                 </a>
 
                                                 <!-- Xóa -->
                                                 <form action="${pageContext.request.contextPath}/events/delete/${event.maSuKien}"
                                                       method="post" class="d-inline" onsubmit="return confirm('Xác nhận xóa sự kiện này?');">
                                                     <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="bx bx-trash me-1"></i>Xóa
+                                                        <i class="bx bx-trash me-1"></i>Xóa sự kiện
                                                     </button>
                                                 </form>
                                             </div>
