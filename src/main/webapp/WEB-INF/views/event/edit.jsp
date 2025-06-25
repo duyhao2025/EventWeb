@@ -2,21 +2,32 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 
-<div class="container my-5">
+<div class="container my-5" style="padding-top: 100px;">
     <h4>Sửa sự kiện</h4>
     <form action="${pageContext.request.contextPath}/events/edit"
           method="post"
           enctype="multipart/form-data">
         <!-- Bắt buộc phải có hidden id để @ModelAttribute bind -->
         <input type="hidden" name="maSuKien" value="${suKien.maSuKien}" />
-
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Hình ảnh mới (nếu muốn thay đổi)</label>
+            <input type="file"
+                   class="form-control"
+                   id="imageFile"
+                   name="imageFile"
+                   accept="image/*">
+        </div>
         <!-- Ví dụ các input tương tự create.jsp -->
         <div class="mb-3">
             <label class="form-label">Tiêu đề</label>
             <input type="text" name="tieuDe" class="form-control"
                    value="${suKien.tieuDe}" required/>
         </div>
-
+        <div class="mb-3">
+            <label class="form-label">Mô Tả :</label>
+            <input type="text" name="moTa" class="form-control"
+                   value="${suKien.moTa}" required/>
+        </div>
         <!-- Thể loại -->
         <div class="mb-3">
             <label class="form-label">Thể loại</label>
@@ -66,7 +77,7 @@
                    value="${suKien.diaDiem}" required/>
         </div>
 
-        
+
 
         <!-- Nút -->
         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>

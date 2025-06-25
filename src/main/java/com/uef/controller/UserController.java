@@ -1,5 +1,7 @@
 package com.uef.controller;
 
+import com.uef.model.DangKy;
+import com.uef.model.HistoryItem;
 import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
@@ -23,12 +25,15 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/")
 public class UserController {
 
+    @Autowired
+    private DangKyService dangKyService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -133,6 +138,7 @@ public class UserController {
     public String processEventRegistration(@RequestParam("hoTen") String hoTen,
             @RequestParam("email") String email,
             @RequestParam("soDienThoai") String soDienThoai,
+            @RequestParam("suKienId") int suKienId,
             Model model,
             HttpServletRequest request) {
 
@@ -141,6 +147,15 @@ public class UserController {
                 model.addAttribute("error", "Sai định dạng email Gmail");
                 return "event/eventregister";
             }
+            // lưu vào bảng DangKy
+            DangKy dk = new DangKy();
+            dk.setMaSuKien(suKienId);
+            dk.setHoTen(hoTen);
+            dk.setEmail(email);
+            dk.setSoDienThoai(soDienThoai);
+            dk.setTrangThai("Đã đăng ký");
+            dangKyService.dangKySuKien(dk);
+
             String code = "CONF" + System.currentTimeMillis();
 
             userService.saveEventRegistration(email, hoTen, soDienThoai, code);
@@ -181,8 +196,12 @@ public class UserController {
         }
     }
 
-    private DangKyService dangKyService = new DangKyServiceImpl();
-//Thông tin cá nhân và Xem lịch sử sự kiện
+    @GetMapping("/events/manager")
+    public String hienThiQuanLyDangKy(@RequestParam("suKienId") int suKienId, Model model) {
+        List<DangKy> danhSach = dangKyService.layDanhSachDangKyTheoSuKien(suKienId);
+        model.addAttribute("danhSachDangKy", danhSach);
+        return "event/eventmanager";
+    }
 
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
@@ -217,5 +236,31 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
-    
+    @GetMapping("/history")
+    public String showParticipationHistory(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Lấy tất cả bản ghi Đăng ký của user
+        List<DangKy> regs = dangKyService.getRegistrationsByUser(user.getMaNguoiDung());
+
+        // Nếu bạn muốn hiển thị thêm thông tin sự kiện (tên, thể loại, ngày giờ)
+        // thì map mỗi DangKy -> một DTO nhỏ
+        List<HistoryItem> history = regs.stream().map(dk -> {
+            SuKien sk = suKienService.findById(dk.getMaSuKien());
+            return new HistoryItem(
+                    sk.getMaSuKien(),
+                    sk.getTieuDe(),
+                    sk.getTenDanhMuc(),
+                    sk.getNgayGio(),
+                    sk.getHanDangKy(),
+                    dk.getTrangThai()
+            );
+        }).collect(Collectors.toList());
+
+        model.addAttribute("history", history);
+        return "user/history";
+    }
 }

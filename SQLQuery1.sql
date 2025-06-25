@@ -4,7 +4,7 @@ GO
 USE WEB_EVENT;
 GO
 
-CREATE TABLE users  (
+CREATE TABLE users (
     ma_nguoi_dung INT PRIMARY KEY IDENTITY(1,1),
     ho_ten NVARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -48,16 +48,21 @@ CREATE TABLE SuKien (
 
 CREATE TABLE DangKy (
     ma_dang_ky INT PRIMARY KEY IDENTITY(1,1),
+    ho_ten NVARCHAR(100),
+    email VARCHAR(100),
+    so_dien_thoai VARCHAR(20),
     ma_nguoi_dung INT,
     ma_su_kien INT,
     ngay_dang_ky DATETIME DEFAULT GETDATE(),
+    trang_thai NVARCHAR(50) DEFAULT N'Đã đăng ký',
     ma_qr VARCHAR(255),
     da_checkin BIT DEFAULT 0,
     thoi_gian_checkin DATETIME,
     da_huy BIT DEFAULT 0,
-    FOREIGN KEY (ma_nguoi_dung) REFERENCES users (ma_nguoi_dung),
+    FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
     FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
 );
+
 
 
 CREATE TABLE DanhGia (

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:include page="/WEB-INF/views/layout/header.jsp" />
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -21,6 +22,7 @@
                 font-weight: bold;
                 margin-bottom: 16px;
             }
+
             footer ul {
                 padding-left: 0;
             }
@@ -28,41 +30,60 @@
             footer li {
                 margin-bottom: 6px;
             }
+
             body {
                 font-family: 'Segoe UI', sans-serif;
                 background: #f3f5f8;
                 margin: 0;
             }
+
             .container {
-                display: flex;
-                gap: 24px;
                 max-width: 1200px;
                 margin: 50px auto;
                 padding: 0 24px;
             }
-            .profile-section, .history-section {
-                background: #fff;
+
+            .tabs {
+                display: flex;
+                margin-bottom: 20px;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 12px;
+                cursor: pointer;
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
+                border-radius: 8px 8px 0 0;
+                margin-right: 2px;
+            }
+
+            .tab.active {
+                background-color: white;
+                color: #333;
+                border-bottom: 2px solid white;
+            }
+
+            .tab-content {
+                display: none;
+                background: white;
                 padding: 30px;
-                border-radius: 12px;
+                border-radius: 0 0 12px 12px;
                 box-shadow: 0 4px 16px rgba(0,0,0,0.06);
             }
-            .profile-section {
-                flex: 1;
+
+            .tab-content.active {
+                display: block;
             }
-            .history-section {
-                flex: 2;
-            }
-            h2 {
-                margin-top: 0;
-                font-size: 22px;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 12px;
-            }
+
             label {
                 font-weight: 500;
                 margin-bottom: 6px;
                 display: block;
             }
+
             input, select {
                 width: 100%;
                 padding: 10px 12px;
@@ -70,123 +91,126 @@
                 border: 1px solid #ccc;
                 border-radius: 8px;
             }
-            button {
-                width: 100%;
-                padding: 12px;
-                background-color: #38a169;
-                color: white;
-                font-weight: bold;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-            }
-            button:hover {
-                background-color: #2f855a;
-            }
+
             .event-card {
                 border: 1px solid #ddd;
                 padding: 16px;
                 border-radius: 10px;
                 margin-bottom: 16px;
             }
+
             .event-card h4 {
                 margin: 0 0 8px;
             }
+
             .event-card p {
                 margin: 4px 0;
                 font-size: 14px;
             }
+
             .event-card a {
                 color: #3182ce;
                 text-decoration: none;
                 font-weight: 500;
             }
+
             .msg {
                 text-align: center;
                 color: green;
                 margin-bottom: 16px;
             }
+
+            .btn-back {
+                display: block;
+                margin-top: 30px;
+                text-align: right;
+            }
         </style>
     </head>
     <body>
-        <div class="container">
-            <!-- Profile Form -->
-            <div class="profile-section">
-                <h2>Thông tin cá nhân</h2>
+        <div class="container" style="padding-top: 100px;">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab(0)">Thông tin cá nhân</div>
+                <div class="tab" onclick="showTab(1)">Lịch sử tham gia sự kiện</div>
+                <div class="tab" onclick="showTab(2)">Sự kiện yêu thích của bạn</div>
+            </div>
 
+            <div class="tab-content active">
+                <h2>Thông tin cá nhân</h2>
                 <c:if test="${not empty msg}">
                     <div class="msg">${msg}</div>
                 </c:if>
-
-                <form action="${pageContext.request.contextPath}/user/profile" method="post">
+                <form action="${pageContext.request.contextPath}/user/profile" method="post" id="profileForm">
                     <label>Họ tên</label>
-                    <input type="text" name="hoTen" value="${user.hoTen}" required />
+                    <input type="text" name="hoTen" value="${user.hoTen}" readonly />
 
                     <label>Email</label>
-                    <input type="email" name="email" value="${user.email}" required />
+                    <input type="email" name="email" value="${user.email}" readonly />
 
                     <label>Số điện thoại</label>
-                    <input type="text" name="soDienThoai" value="${user.soDienThoai}" />
+                    <input type="text" name="soDienThoai" value="${user.soDienThoai}" readonly />
 
                     <label>Ngôn ngữ</label>
-                    <select name="ngonNgu">
+                    <select name="ngonNgu" disabled>
                         <option value="vi" ${user.ngonNgu == 'vi' ? 'selected' : ''}>Tiếng Việt</option>
                         <option value="en" ${user.ngonNgu == 'en' ? 'selected' : ''}>English</option>
                     </select>
 
-                    <button type="submit">Cập nhật</button>
+                    <button type="button" id="editBtn">Sửa thông tin cá nhân</button>
+                    <button type="submit" id="saveBtn" style="display:none; margin-top: 12px;">Cập nhật</button>
                 </form>
+
             </div>
 
-            <!-- Event History -->
-            <div class="history-section">
-                <h2>Lịch sử tham gia sự kiện</h2>
+            <div class="tab-content">
+                <c:if test="${empty history}">
+                    <div class="alert alert-info">Bạn chưa tham gia sự kiện nào.</div>
+                </c:if>
 
-                <c:forEach var="e" items="${events}">
-                    <div class="event-card">
-                        <h4>${e.tieuDe}</h4>
-                        <p>Ngày tổ chức: ${e.ngayGio}</p>
-                        <p>Trạng thái: ${e.trangThai}</p>
-                        <c:if test="${e.trangThai == 'finished' && !e.daDanhGia}">
-                            <a href="${pageContext.request.contextPath}/event/evaluate?suKienId=${e.maSuKien}">Đánh giá sự kiện</a>
-                        </c:if>
-                    </div>
-                </c:forEach>
-            </div>
-        </div>
-        <footer>
-            <!-- footer.jsp -->
-            <div style="background-color: #1c2230; color: #eaeaea; padding: 40px 0; font-size: 14px;">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-3 ">
-                            <h5 class="text-white">Về chúng tôi</h5>
-                            <ul class="list-unstyled">
-                                <li><a href="#">Giới thiệu</a></li>
-                                <li><a href="#">Bảng giá dịch vụ</a></li>
-                                <li><a href="#">Liên hệ quảng cáo</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3 ">
-                            <h5 class="text-white">Trợ giúp</h5>
-                            <ul class="list-unstyled">
-                                <li><a href="#">Liên hệ</a></li>
-                                <li><a href="#">Trung tâm trợ giúp</a></li>
-                                <li><a href="#">Quy định và Điều khoản</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-3 ">
-                            <h5 class="text-white">Thông tin</h5>
-                            <ul class="list-unstyled">
-                                <li><a href="#">Quy chế hoạt động</a></li>
-                                <li><a href="#">Cơ chế giải quyết tranh chấp</a></li>
-                                <li><a href="#">Chính sách bảo mật thông tin</a></li>
-                            </ul>
-                        </div>
-
+                <div class="list-group">
+                    <c:forEach var="item" items="${history}">
+                        <div class="list-group-item d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5>${item.tieuDe}</h5>
+                                <small>Thể loại: ${item.tenDanhMuc}</small><br/>
+                                <small>Bắt đầu: ${item.ngayGio}</small><br/>
+                                <small>Hạn đăng ký: ${item.hanDangKy}</small>
+                            </div>
+                            <span 
+                                class="badge rounded-pill 
+                                ${item.trangThai=='Đã đăng ký' ? 'bg-primary' 
+                                  : item.trangThai=='Đã hủy' ? 'bg-danger' 
+                                  : 'bg-secondary'}">
+                                    ${item.trangThai}
+                                </span>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
+
+                <div class="tab-content">
+                    <h2>Sự kiện yêu thích của bạn</h2>
+                    <p>Hiển thị danh sách sự kiện đã lưu hoặc yêu thích ở đây.</p>
+
+                </div>
             </div>
-        </footer>
-    </body>
-</html>
+            <script>
+                function showTab(index) {
+                    const tabs = document.querySelectorAll(".tab");
+                    const contents = document.querySelectorAll(".tab-content");
+                    tabs.forEach((tab, i) => {
+                        tab.classList.toggle("active", i === index);
+                        contents[i].classList.toggle("active", i === index);
+                    });
+                }
+
+                document.getElementById("editBtn").addEventListener("click", function () {
+                    document.querySelectorAll("input, select").forEach(el => el.removeAttribute("readonly"));
+                    document.querySelector("select").removeAttribute("disabled");
+                    document.getElementById("saveBtn").style.display = "block";
+                    this.style.display = "none";
+                });
+            </script>
+            <jsp:include page="/WEB-INF/views/layout/footer.jsp" />
+        </body>
+    </html>

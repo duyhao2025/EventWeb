@@ -54,23 +54,15 @@ public class SuKienDAOImpl implements SuKienDAO {
         """;
 
         List<SuKien> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
-
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 SuKien e = new SuKien();
                 e.setMaSuKien(rs.getInt("ma_su_kien"));
                 e.setTieuDe(rs.getString("tieu_de"));
                 e.setMoTa(rs.getString("mo_ta"));
                 e.setHinhAnh(rs.getString("hinh_anh"));
-
-                Timestamp tsNgayGio = rs.getTimestamp("ngay_gio");
-                e.setNgayGio(tsNgayGio != null ? tsNgayGio.toLocalDateTime() : null);
-
-                Timestamp tsHanDangKy = rs.getTimestamp("han_dang_ky");
-                e.setHanDangKy(tsHanDangKy != null ? tsHanDangKy.toLocalDateTime() : null);
-
+                e.setNgayGio(rs.getTimestamp("ngay_gio").toLocalDateTime());
+                e.setHanDangKy(rs.getTimestamp("han_dang_ky").toLocalDateTime());
                 e.setThoiLuongPhut(rs.getInt("thoi_luong_phut"));
                 e.setSoNguoiToiDa(rs.getInt("so_nguoi_toi_da"));
                 e.setDiaDiem(rs.getString("dia_diem"));
@@ -117,21 +109,29 @@ public class SuKienDAOImpl implements SuKienDAO {
     @Override
     public void update(SuKien sk) {
         String sql = """
-            UPDATE SuKien SET
-              tieu_de=?, mo_ta=?, ngay_gio=?, han_dang_ky=?,
-              thoi_luong_phut=?, so_nguoi_toi_da=?, dia_diem=?, ma_danh_muc=?
-            WHERE ma_su_kien=?
-            """;
+        UPDATE SuKien SET
+          tieu_de = ?,
+          mo_ta = ?,
+          hinh_anh = ?,           -- thêm dòng này
+          ngay_gio = ?,
+          han_dang_ky = ?,
+          thoi_luong_phut = ?,
+          so_nguoi_toi_da = ?,
+          dia_diem = ?,
+          ma_danh_muc = ?
+        WHERE ma_su_kien = ?
+        """;
         try (Connection c = DBConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, sk.getTieuDe());
             ps.setString(2, sk.getMoTa());
-            ps.setTimestamp(3, Timestamp.valueOf(sk.getNgayGio()));
-            ps.setTimestamp(4, Timestamp.valueOf(sk.getHanDangKy()));
-            ps.setInt(5, sk.getThoiLuongPhut());
-            ps.setInt(6, sk.getSoNguoiToiDa());
-            ps.setString(7, sk.getDiaDiem());
-            ps.setInt(8, sk.getMaDanhMuc());
-            ps.setInt(9, sk.getMaSuKien());
+            ps.setString(3, sk.getHinhAnh());               // bind hinh_anh
+            ps.setTimestamp(4, Timestamp.valueOf(sk.getNgayGio()));
+            ps.setTimestamp(5, Timestamp.valueOf(sk.getHanDangKy()));
+            ps.setInt(6, sk.getThoiLuongPhut());
+            ps.setInt(7, sk.getSoNguoiToiDa());
+            ps.setString(8, sk.getDiaDiem());
+            ps.setInt(9, sk.getMaDanhMuc());
+            ps.setInt(10, sk.getMaSuKien());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Lỗi update SuKien", e);
@@ -199,18 +199,17 @@ public class SuKienDAOImpl implements SuKienDAO {
     @Override
     public List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc) {
         List<SuKien> list = new ArrayList<>();
-        String sql = 
-    "SELECT s.ma_su_kien, s.tieu_de, " +
-    "COUNT(DISTINCT d.ma_dang_ky) AS so_luong_tham_gia, " +
-    "AVG(CAST(g.diem AS FLOAT)) AS sao_trung_binh " +
-    "FROM SuKien s " +
-    "LEFT JOIN DangKy d ON d.ma_su_kien = s.ma_su_kien " +
-    "LEFT JOIN DanhGia g ON g.ma_su_kien = s.ma_su_kien " +
-    "WHERE s.ma_nguoi_to_chuc = ? " +
-    "GROUP BY s.ma_su_kien, s.tieu_de";
+        String sql
+                = "SELECT s.ma_su_kien, s.tieu_de, "
+                + "COUNT(DISTINCT d.ma_dang_ky) AS so_luong_tham_gia, "
+                + "AVG(CAST(g.diem AS FLOAT)) AS sao_trung_binh "
+                + "FROM SuKien s "
+                + "LEFT JOIN DangKy d ON d.ma_su_kien = s.ma_su_kien "
+                + "LEFT JOIN DanhGia g ON g.ma_su_kien = s.ma_su_kien "
+                + "WHERE s.ma_nguoi_to_chuc = ? "
+                + "GROUP BY s.ma_su_kien, s.tieu_de";
 
-        try (Connection conn = DBConnection.getConnection(); 
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, maNguoiToChuc);
             ResultSet rs = ps.executeQuery();
@@ -226,6 +225,33 @@ public class SuKienDAOImpl implements SuKienDAO {
 
         } catch (Exception e) {
             throw new RuntimeException("Lỗi thống kê sự kiện", e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SuKien> findByOrganizer(int maNguoiToChuc) throws Exception {
+        List<SuKien> list = new ArrayList<>();
+        String sql = """
+        SELECT
+          s.ma_su_kien, s.tieu_de, s.mo_ta, s.hinh_anh,
+          s.ngay_gio, s.han_dang_ky, s.thoi_luong_phut,
+          s.so_nguoi_toi_da, s.dia_diem,
+          s.ma_danh_muc, d.ten_vi AS tenDanhMuc,
+          s.ma_nguoi_to_chuc
+        FROM SuKien s
+        LEFT JOIN DanhMuc d ON s.ma_danh_muc = d.ma_danh_muc
+        WHERE s.ma_nguoi_to_chuc = ?
+        ORDER BY s.ngay_gio DESC
+    """;
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiToChuc);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SuKien e = mapRow(rs);
+                    list.add(e);
+                }
+            }
         }
         return list;
     }

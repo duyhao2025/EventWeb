@@ -7,6 +7,8 @@
 
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -84,15 +86,17 @@
         </style>
     </head>
     <body>
-        <div class="form-container">
+        <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+        <div class="form-container" style="padding-top: 250px;">
             <h2>Đăng ký Sự kiện</h2>
             <form action="${pageContext.request.contextPath}/eventregister" method="post">
-                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên để " required>
-                <input type="email" name="email" placeholder="Email"  required/>
+                <input type="hidden" name="suKienId" value="${param.suKienId}">
+
+                <input type="text" name="hoTen" placeholder="Vui lòng điền đúng tên " required>
+                <input type="email" name="email" placeholder="Email" required />
                 <input type="text" name="soDienThoai" placeholder="Số điện thoại" required>
                 <input type="submit" value="Đăng ký">
             </form>
-
             <c:if test="${not empty error}">
                 <p class="error">${error}</p>
             </c:if>

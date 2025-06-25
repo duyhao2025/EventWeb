@@ -10,24 +10,32 @@ package com.uef.service;
  */
 import com.uef.dao.SuKienDAO;
 import com.uef.model.SuKien;
+import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class SuKienServiceImpl implements SuKienService {
 
+    private Path uploadDir = null;
+
+    @Autowired
+    public SuKienServiceImpl(ServletContext servletContext) throws IOException {
+        // Lấy đường dẫn tương ứng với src/main/webapp/uploads khi chạy
+        String realPath = servletContext.getRealPath("/uploads");
+        uploadDir = Paths.get(realPath);
+        // Tạo thư mục nếu chưa tồn tại
+        Files.createDirectories(uploadDir);
+    }
     @Autowired
     private SuKienDAO suKienDAO;
     private List<SuKien> store = new ArrayList<>();
-    private final Path uploadDir = Paths.get("uploads");
 
-    public SuKienServiceImpl() throws Exception {
-        Files.createDirectories(uploadDir);
-    }
 
     @Override
     public List<SuKien> getAll() {
@@ -102,5 +110,14 @@ public class SuKienServiceImpl implements SuKienService {
     @Override
     public List<SuKien> getThongKeSuKienToChuc(int maNguoiToChuc) {
         return suKienDAO.getThongKeSuKienToChuc(maNguoiToChuc);
+    }
+
+    @Override
+    public List<SuKien> getByOrganizer(int maNguoiToChuc) {
+        try {
+            return suKienDAO.findByOrganizer(maNguoiToChuc);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi lấy sự kiện của người tổ chức", e);
+        }
     }
 }

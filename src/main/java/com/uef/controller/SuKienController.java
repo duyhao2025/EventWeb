@@ -8,15 +8,18 @@ package com.uef.controller;
  *
  * @author Admin
  */
+import com.uef.model.DangKy;
 import com.uef.model.DanhMuc;
 import com.uef.model.SuKien;
 import com.uef.model.User;
+import com.uef.service.DangKyService;
 import com.uef.service.DanhMucService;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -59,9 +62,10 @@ public class SuKienController {
             @RequestParam("thoiLuongPhut") Integer thoiLuongPhut,
             @RequestParam("soNguoiToiDa") Integer soNguoiToiDa,
             @RequestParam("diaDiem") String diaDiem,
-            @RequestParam(value = "imageFile", required = false) MultipartFile file,
+            @RequestParam("imageFile") MultipartFile file, HttpServletRequest request,
             HttpSession session
     ) {
+
         // 1) Build model
         SuKien sukien = new SuKien();
         sukien.setTieuDe(tieuDe);
@@ -161,10 +165,12 @@ public class SuKienController {
         sk.setHinhAnh(exist.getHinhAnh());
         sk.setMaNguoiToChuc(exist.getMaNguoiToChuc());
 
-        // 4. Nếu user upload ảnh mới
+        // Ảnh: nếu có upload mới, lưu và ghi đè
         if (file != null && !file.isEmpty()) {
             String newName = suKienService.saveImage(file);
             sk.setHinhAnh(newName);
+        } else {
+            sk.setHinhAnh(exist.getHinhAnh());
         }
 
         // 5. Gọi service
@@ -212,4 +218,28 @@ public class SuKienController {
         model.addAttribute("suKienList", suKienList);
         return "event/myevents"; // kiểm tra view nằm đúng trong /WEB-INF/views/event/myevents.jsp
     }
+
+    @GetMapping("/organized")
+    public String showMyEvents(Model model, HttpSession session) {
+        User current = (User) session.getAttribute("user");
+        if (current == null) {
+            return "redirect:/login";
+        }
+        List<SuKien> mine = suKienService.getByOrganizer(current.getMaNguoiDung());
+        model.addAttribute("myEvents", mine);
+        return "event/myevents";  // mapped to /WEB-INF/views/event/myevents.jsp
+    }
+
+    @GetMapping("/detail/{id}")
+    public String chiTietSuKien(@PathVariable("id") int id, Model model) {
+        SuKien suKien = suKienService.findById(id);
+        if (suKien == null) {
+            return "redirect:/demo"; // hoặc trả về 404.jsp
+        }
+        model.addAttribute("event", suKien);
+        return "event/detail"; // trỏ tới /WEB-INF/views/event/detail.jsp
+    }
+    @Autowired
+    private DangKyService dangKyService;
+
 }
