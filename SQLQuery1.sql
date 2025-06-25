@@ -104,6 +104,8 @@ CREATE TABLE YeuThich (
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
     FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
 );
+GO
+ALTER TABLE YeuThich ADD da_an BIT DEFAULT 0;
 
 INSERT INTO DanhMuc(ten_vi, ten_en) VALUES
   (N'Hội thảo',            'Conference'),
