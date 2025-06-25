@@ -4,9 +4,10 @@ import com.uef.model.DangKy;
 import com.uef.model.SuKien;
 import com.uef.model.User;
 import com.uef.service.DangKyService;
-import com.uef.service.DangKyServiceImpl;
+
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
+import com.uef.service.YeuThichService;
 import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
@@ -36,19 +37,27 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SuKienService suKienService;
+    @Autowired
+    private YeuThichService yeuThichService;
 
     // GET: Hiển thị form đăng nhập
-    @GetMapping("/demo")
-    public String showDemo(HttpSession session, Model model) {
-        // Không còn kiểm tra session → ai cũng vào được demo
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("user", u);
+@GetMapping("/demo")
+public String showDemo(HttpSession session, Model model) {
+    User u = (User) session.getAttribute("user");
+    model.addAttribute("user", u);
 
-        List<SuKien> event = suKienService.getAll();
-        model.addAttribute("suKienList", event);
+    List<SuKien> event = suKienService.getAll();
+    model.addAttribute("suKienList", event);
 
-        return "demo/index";
+    if (u != null) {
+        List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(u.getMaNguoiDung());
+        List<Integer> idYeuThich = dsYeuThich.stream().map(SuKien::getMaSuKien).toList();
+        model.addAttribute("idYeuThichList", idYeuThich);
     }
+
+    return "demo/index";
+}
+
 
     // POST: Xử lý đăng nhập
     @PostMapping("/login")
@@ -201,7 +210,6 @@ public class UserController {
         return "event/eventmanager";
     }
 
-
     @GetMapping("/user/profile")
     public String showProfile(HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute("user");
@@ -215,6 +223,10 @@ public class UserController {
         List<SuKien> history = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
         model.addAttribute("events", history);
 
+        // truyền danh sách yêu thích
+        List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(user.getMaNguoiDung());
+        model.addAttribute("yeuThichList", dsYeuThich);
+       
         return "user/profile";
     }
 //Thông tin cá nhân và Xem lịch sử sự kiện

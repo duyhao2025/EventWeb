@@ -96,6 +96,15 @@ CREATE TABLE NgonNguDaiDien (
     FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung)
 
 );
+CREATE TABLE YeuThich (
+    ma_nguoi_dung INT,
+    ma_su_kien INT,
+    ngay_yeu_thich DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (ma_nguoi_dung, ma_su_kien),
+    FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
+    FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
+);
+
 INSERT INTO DanhMuc(ten_vi, ten_en) VALUES
   (N'Hội thảo',            'Conference'),
   (N'Workshop',            'Workshop'),
@@ -118,3 +127,4 @@ ALTER TABLE DangKy ADD
     ho_ten NVARCHAR(100),
     email VARCHAR(100),
     so_dien_thoai VARCHAR(20);
+

@@ -16,6 +16,7 @@ import com.uef.service.DangKyService;
 import com.uef.service.DanhMucService;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
+import com.uef.service.YeuThichService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/events")
 public class SuKienController {
 
+    @Autowired
+    private YeuThichService yeuThichService;
     @Autowired
     private SuKienService suKienService;
     private final DateTimeFormatter DT_FMT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -226,17 +229,28 @@ public class SuKienController {
         return "event/myevents";  // mapped to /WEB-INF/views/event/myevents.jsp
     }
 
-    @GetMapping("/detail/{id}")
-    public String chiTietSuKien(@PathVariable("id") int id, Model model) {
-        SuKien suKien = suKienService.findById(id);
-        if (suKien == null) {
-            return "redirect:/demo"; // hoặc trả về 404.jsp
-        }
-        model.addAttribute("event", suKien);
-        return "event/detail"; // trỏ tới /WEB-INF/views/event/detail.jsp
+  @GetMapping("/detail/{id}")
+public String chiTietSuKien(@PathVariable("id") int id,
+                            Model model,
+                            HttpSession session) {
+    SuKien suKien = suKienService.findById(id);
+    if (suKien == null) {
+        return "redirect:/demo"; // hoặc 404
     }
+
+    model.addAttribute("event", suKien);
+
+    // Truyền thêm trạng thái yêu thích
+    User user = (User) session.getAttribute("user");
+    if (user != null) {
+        boolean daYeuThich = yeuThichService.daYeuThichHienTai(user.getMaNguoiDung(), id);
+        model.addAttribute("user", user);
+        model.addAttribute("daYeuThich", daYeuThich);
+    }
+
+    return "event/detail";
+}
     @Autowired
     private DangKyService dangKyService;
 
-    
 }

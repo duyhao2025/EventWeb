@@ -245,6 +245,13 @@
                                 <%
                                     }
                                 %>
+                                <%
+                                    if (u != null) { // chỉ cho phép người đã đăng nhập yêu thích
+%>
+
+                                <%
+                                    }
+                                %>
                                 <a href="${pageContext.request.contextPath}/events/detail/<%= event.getMaSuKien()%>" class="btn-detail">Chi tiết</a>
                                 <a href="${pageContext.request.contextPath}/eventregister?suKienId=<%= event.getMaSuKien()%>">Đăng ký tham gia</a>
 
@@ -262,7 +269,7 @@
                     <p style="color:red;">Không có sự kiện nào để hiển thị.</p>
                     <%
                         } // end if
-                    %>
+%>
                 </div>
             </div>
         </div>
