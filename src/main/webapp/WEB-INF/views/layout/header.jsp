@@ -1,5 +1,8 @@
 <%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setLocale value="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"/>
+<fmt:setBundle basename="messages"/>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -107,25 +110,25 @@
                             <!-- Đăng xuất -->
                             <a class="btn btn-outline-primary btn-hover"
                                href="${pageContext.request.contextPath}/logout">
-                                Đăng xuất
+                                <fmt:message key="header.logout"/>
                             </a>
 
                             <!-- Trang chủ -->
                             <a class="btn btn-outline-primary btn-hover"
                                href="${pageContext.request.contextPath}/demo">
-                                Trang chủ
+                                <fmt:message key="header.home"/>
                             </a>
 
                             <!-- Thông tin cá nhân -->
                             <a class="btn btn-outline-primary btn-hover"
                                href="${pageContext.request.contextPath}/user/profile">
-                                Thông tin cá nhân
+                                <fmt:message key="header.profile"/>
                             </a>
 
                             <!-- Trung tâm quản lý sự kiện -->
                             <a class="btn btn-outline-primary btn-hover"
                                href="${pageContext.request.contextPath}/events/my_events">
-                                Trung tâm quản lý sự kiện
+                                <fmt:message key="header.myEvents"/>
                             </a>
 
                             <!-- Danh mục -->
@@ -134,18 +137,30 @@
                                         name="category"
                                         class="form-select shadow-sm"
                                         style="height: 44px; width: 180px; border-radius: 24px;">
-                                    <option value="">Danh mục</option>
-                                    <option value="Hội thảo">Hội thảo</option>
-                                    <option value="Workshop">Workshop</option>
-                                    <option value="Cuộc thi">Cuộc thi</option>
-                                    <option value="Triển lãm">Triển lãm</option>
-                                    <option value="Hội thảo trực tuyến">Hội thảo trực tuyến</option>
-                                    <option value="Buổi giao lưu">Buổi giao lưu</option>
-                                    <option value="Buổi hòa nhạc">Buổi hòa nhạc</option>
-                                    <option value="Khóa học ngắn hạn">Khóa học ngắn hạn</option>
+                                    <option value=""><fmt:message key="category.all"/></option>
+                                    <option value="Hội thảo"><fmt:message key="category.seminar"/></option>
+                                    <option value="Workshop"><fmt:message key="category.workshop"/></option>
+                                    <option value="Cuộc thi"><fmt:message key="category.competition"/></option>
+                                    <option value="Triển lãm"><fmt:message key="category.exhibition"/></option>
+                                    <option value="Hội thảo trực tuyến"><fmt:message key="category.webinar"/></option>
+                                    <option value="Buổi giao lưu"><fmt:message key="category.meetup"/></option>
+                                    <option value="Buổi hòa nhạc"><fmt:message key="category.concert"/></option>
+                                    <option value="Khóa học ngắn hạn"><fmt:message key="category.shortcourse"/></option>
                                 </select>
                             </form>
+                            <!-- Dropdown chọn ngôn ngữ -->
+                            <form id="langForm" action="${pageContext.request.contextPath}/setLang" method="get" class="d-flex ms-auto">
+                                <select name="lang" onchange="document.getElementById('langForm').submit()" class="form-select" style="width: 200px;">
+                                    <c:set var="currentLang" value="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE'].language}" />
 
+                                    <option value="en" ${empty currentLang || currentLang == 'en' ? 'selected' : ''}>
+                                        Tiếng Anh | English
+                                    </option>
+                                    <option value="vi" ${currentLang == 'vi' ? 'selected' : ''}>
+                                        Tiếng Việt | Vietnamese
+                                    </option>
+                                </select>
+                            </form>
                         </div>
                     </div>
                 </nav>
@@ -158,10 +173,10 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
         <script type="text/javascript">
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-            });
+                                    $("#menu-toggle").click(function (e) {
+                                        e.preventDefault();
+                                        $("#wrapper").toggleClass("toggled");
+                                    });
 
         </script>
     </body>

@@ -37,4 +37,5 @@ public interface UserService {
 
     User findById(int id);
 
+    void updateLanguage(int maNguoiDung, String lang);
 }

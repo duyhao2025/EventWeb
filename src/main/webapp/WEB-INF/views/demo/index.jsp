@@ -4,7 +4,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+<fmt:setLocale value="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}" />
+<fmt:setBundle basename="messages" />
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 
@@ -253,7 +256,7 @@
                                id="searchBox"
                                name="keyword"
                                class="form-control rounded-start-pill ps-4"
-                               placeholder="Tìm kiếm sự kiện...">
+                               placeholder="<fmt:message key='search.placeholder'/>">
                         <button class="btn btn-outline-secondary rounded-end-pill"
                                 type="submit"
                                 style="width: 44px; height: 44px; font-size: 20px;">
@@ -296,6 +299,13 @@
                                     User u = (User) session.getAttribute("user");
                                     // So sánh email
                                     if (u != null && u.getEmail().equals(event.getCreatorEmail())) {
+                                %>
+
+                                <%
+                                    }
+                                %>
+                                <%
+                                    if (u != null) { // chỉ cho phép người đã đăng nhập yêu thích
                                 %>
 
                                 <%
@@ -482,7 +492,7 @@
                 }
             });
         </script>
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </body>
 
 </html>
-<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>

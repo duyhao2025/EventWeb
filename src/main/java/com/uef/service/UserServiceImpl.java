@@ -209,4 +209,10 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+     @Override
+    public void updateLanguage(int maNguoiDung, String lang) {
+        String sql = "UPDATE NgonNguDaiDien SET ngon_ngu = ? WHERE ma_nguoi_dung = ?";
+        jdbcTemplate.update(sql, lang, maNguoiDung);
+    }
+
 }

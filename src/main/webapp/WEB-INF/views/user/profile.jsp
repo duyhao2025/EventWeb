@@ -176,7 +176,22 @@
                                     <small>Bắt đầu: ${item.ngayGio}</small><br/>
                                     <small>Hạn đăng ký: ${item.hanDangKy}</small>
                                 </div>
-                                <span class="badge bg-secondary">${item.trangThai}</span>
+                                <c:choose>
+                                    <c:when test="${item.trangThai == 'Đã đăng ký'}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-success me-2">${item.trangThai}</span>
+                                            <form action="${pageContext.request.contextPath}/user/history/cancel/${item.maSuKien}"
+                                                  method="post"
+                                                  style="display:inline"
+                                                  onsubmit="return confirm('Bạn có chắc muốn hủy đăng ký?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Hủy đăng ký</button>
+                                            </form>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="badge bg-secondary">${item.trangThai}</span>
+                                    </c:otherwise>
+                                </c:choose>
                             </li>
                         </c:forEach>
                     </ul>
@@ -185,10 +200,25 @@
 
             <div class="tab-content">
                 <h2>Sự kiện yêu thích của bạn</h2>
-                <p>Hiển thị danh sách sự kiện đã lưu hoặc yêu thích ở đây.</p>
+                <c:if test="${empty yeuThichList}">
+                    <p>Bạn chưa yêu thích sự kiện nào.</p>
+                </c:if>
 
+                <c:forEach var="event" items="${yeuThichList}">
+                    <div class="event-card">
+                        <img class="event-image" src="${pageContext.request.contextPath}/uploads/${event.hinhAnh}" alt="Hình sự kiện" />
+                        <div class="event-info">
+                            <h4>${event.tieuDe}</h4>
+                            <p>${event.moTa}</p>
+                            <p>Thời gian: ${event.ngayGio}</p>
+                            <p>Địa điểm: ${event.diaDiem}</p>
+                            <a href="${pageContext.request.contextPath}/events/detail/${event.maSuKien}">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
         </div>
+
         <script>
             function showTab(index) {
                 const tabs = document.querySelectorAll(".tab");

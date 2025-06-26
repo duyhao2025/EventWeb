@@ -23,7 +23,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class DangKyServiceImpl implements DangKyService {
 
-   
+    private final DangKyDAO dangKyDAO;
+
+    @Autowired
+    public DangKyServiceImpl(DangKyDAO dangKyDAO) {
+        this.dangKyDAO = dangKyDAO;
+    }
+
     @Override
     public List<SuKien> getLichSuThamGia(int maNguoiDung) {
         String sql = """
@@ -42,8 +48,7 @@ public class DangKyServiceImpl implements DangKyService {
         """;
 
         List<SuKien> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, maNguoiDung);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -65,13 +70,10 @@ public class DangKyServiceImpl implements DangKyService {
 
     @Override
     public void huyDangKy(int maNguoiDung, int maSuKien) {
-        String sql = "DELETE FROM DangKy WHERE ma_nguoi_dung = ? AND ma_su_kien = ?";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, maNguoiDung);
-            stmt.setInt(2, maSuKien);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try {
+            dangKyDAO.updateTrangThai(maNguoiDung, maSuKien, "Đã hủy");
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi hủy đăng ký", e);
         }
     }
 
@@ -98,12 +100,6 @@ public class DangKyServiceImpl implements DangKyService {
             e.printStackTrace();
         }
         return null;
-    }
-    private final DangKyDAO dangKyDAO;
-
-    @Autowired
-    public DangKyServiceImpl(DangKyDAO dangKyDAO) {
-        this.dangKyDAO = dangKyDAO;
     }
 
     @Override

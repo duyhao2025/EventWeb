@@ -6,6 +6,7 @@ import com.uef.model.User;
 import com.uef.service.DangKyService;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
+import com.uef.service.YeuThichService;
 import com.uef.until.EmailUtil;
 import com.uef.until.HashUtil;
 import com.uef.until.QRCodeGenerator;
@@ -36,6 +37,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private SuKienService suKienService;
+    @Autowired
+    private YeuThichService yeuThichService;
 
     // GET: Hiển thị form đăng nhập
     @GetMapping("/demo")
@@ -46,7 +49,11 @@ public class UserController {
 
         List<SuKien> event = suKienService.getAll();
         model.addAttribute("suKienList", event);
-
+        if (u != null) {
+            List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(u.getMaNguoiDung());
+            List<Integer> idYeuThich = dsYeuThich.stream().map(SuKien::getMaSuKien).toList();
+            model.addAttribute("idYeuThichList", idYeuThich);
+        }
         return "demo/index";
     }
 
@@ -55,7 +62,8 @@ public class UserController {
     public String processLogin(@RequestParam("email") String email,
             @RequestParam("mat_khau") String password,
             HttpSession session,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes
+    ) {
         User user = userService.findByEmail(email);
         if (user != null) {
             String hashedInput = HashUtil.sha256(password);
@@ -71,7 +79,8 @@ public class UserController {
     // GET: Hiển thị form đăng ký
     @GetMapping("/register")
     public String showRegisterForm(@RequestParam(value = "error", required = false) String error,
-            Model model) {
+            Model model
+    ) {
         if (error != null) {
             model.addAttribute("error", error);
         }
@@ -84,7 +93,8 @@ public class UserController {
             @RequestParam("email") String email,
             @RequestParam("mat_khau") String password,
             @RequestParam("so_dien_thoai") String phone,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes
+    ) {
         try {
             boolean success = userService.registerUser(hoTen, email, password, phone);
             if (success) {
@@ -115,14 +125,16 @@ public class UserController {
 // Đăng xuất
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session
+    ) {
         session.invalidate();
         return "redirect:/login";
     }
 // Đăng ký tham gia sự kiện
 
     @GetMapping("/eventregister")
-    public String showEventRegistrationForm(HttpServletRequest request, Model model) {
+    public String showEventRegistrationForm(HttpServletRequest request, Model model
+    ) {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -138,7 +150,8 @@ public class UserController {
             @RequestParam("soDienThoai") String soDienThoai,
             @RequestParam("suKienId") int suKienId,
             Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request
+    ) {
 
         try {
             if (!email.toLowerCase().endsWith("@gmail.com")) {
@@ -200,14 +213,16 @@ public class UserController {
     }
 
     @GetMapping("/events/manager")
-    public String hienThiQuanLyDangKy(@RequestParam("suKienId") int suKienId, Model model) {
+    public String hienThiQuanLyDangKy(@RequestParam("suKienId") int suKienId, Model model
+    ) {
         List<DangKy> danhSach = dangKyService.layDanhSachDangKyTheoSuKien(suKienId);
         model.addAttribute("danhSachDangKy", danhSach);
         return "event/eventmanager";
     }
 
     @GetMapping("/user/profile")
-    public String showProfile(HttpSession session, Model model) {
+    public String showProfile(HttpSession session, Model model
+    ) {
         User loggedUser = (User) session.getAttribute("user");
         if (loggedUser == null) {
             return "redirect:/login";
@@ -218,7 +233,9 @@ public class UserController {
 
         List<SuKien> historyList = dangKyService.getLichSuThamGia(user.getMaNguoiDung());
         model.addAttribute("history", historyList);
-
+// truyền danh sách yêu thích
+        List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(user.getMaNguoiDung());
+        model.addAttribute("yeuThichList", dsYeuThich);
         return "user/profile";
     }
 //Thông tin cá nhân và Xem lịch sử sự kiện
@@ -226,7 +243,8 @@ public class UserController {
     @PostMapping("/user/profile")
     public String updateProfile(@ModelAttribute("user") User user,
             HttpSession session,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes
+    ) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
             return "redirect:/login";
@@ -240,7 +258,8 @@ public class UserController {
     }
 
     @GetMapping("/history")
-    public String showParticipationHistory(HttpSession session, Model model) {
+    public String showParticipationHistory(HttpSession session, Model model
+    ) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -267,4 +286,18 @@ public class UserController {
         return "user/profile";
     }
 
+    @PostMapping("/user/history/cancel/{suKienId}")
+    public String cancelRegistration(@PathVariable int suKienId,
+            HttpSession session,
+            RedirectAttributes ra) {
+        User u = (User) session.getAttribute("user");
+        if (u == null) {
+            return "redirect:/login";
+        }
+
+        dangKyService.huyDangKy(u.getMaNguoiDung(), suKienId);
+        ra.addFlashAttribute("msg", "Hủy đăng ký thành công!");
+        // quay về lại tab lịch sử (có thể gắn thêm fragment để giữ tab)
+        return "redirect:/user/profile";
+    }
 }

@@ -21,7 +21,14 @@ CREATE TABLE DanhMuc (
     ten_vi NVARCHAR(100) COLLATE Vietnamese_CI_AS,
     ten_en NVARCHAR(100)
 );
-
+CREATE TABLE YeuThich (
+    ma_nguoi_dung INT,
+    ma_su_kien INT,
+    ngay_yeu_thich DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (ma_nguoi_dung, ma_su_kien),
+    FOREIGN KEY (ma_nguoi_dung) REFERENCES users(ma_nguoi_dung),
+    FOREIGN KEY (ma_su_kien) REFERENCES SuKien(ma_su_kien)
+);
 
 CREATE TABLE SuKien (
     ma_su_kien INT PRIMARY KEY IDENTITY(1,1),
@@ -79,16 +86,6 @@ CREATE TABLE DanhGia (
 );
 
 
-CREATE TABLE YeuCauToChuc (
-    ma_yeu_cau INT PRIMARY KEY IDENTITY(1,1),
-    
-	ma_nguoi_dung INT,
-    ngay_yeu_cau DATETIME DEFAULT GETDATE(),
-    trang_thai VARCHAR(50) DEFAULT 'pending',
-    ghi_chu NVARCHAR(255),
-    FOREIGN KEY (ma_nguoi_dung) REFERENCES [users](ma_nguoi_dung)
-);
-
 CREATE TABLE DiaDiemToChuc (
     ma_su_kien INT PRIMARY KEY,
     dia_chi NVARCHAR(MAX),
@@ -119,3 +116,7 @@ UPDATE DanhMuc SET ten_vi = N'Buổi giao lưu' WHERE ma_danh_muc = 6;
 UPDATE DanhMuc SET ten_vi = N'Buổi hòa nhạc' WHERE ma_danh_muc = 7;
 UPDATE DanhMuc SET ten_vi = N'Khóa học ngắn hạn' WHERE ma_danh_muc = 8;
 SELECT * FROM DanhMuc;
+ALTER TABLE YeuThich 
+  ADD da_an BIT     -- hoặc TINYINT
+    NOT NULL 
+    DEFAULT 0;

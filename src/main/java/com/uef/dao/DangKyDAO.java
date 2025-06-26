@@ -18,4 +18,6 @@ public interface DangKyDAO {
     List<DangKy> findBySuKienId(int suKienId);
 
     List<DangKy> findByUserId(int maNguoiDung);
+
+    void updateTrangThai(int maNguoiDung, int maSuKien, String trangThai) throws Exception;
 }

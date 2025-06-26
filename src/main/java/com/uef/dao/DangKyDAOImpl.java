@@ -9,6 +9,9 @@ package com.uef.dao;
  * @author Admin
  */
 import com.uef.model.DangKy;
+import com.uef.until.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -72,5 +75,16 @@ public class DangKyDAOImpl implements DangKyDAO {
                 return dk;
             }
         });
+    }
+
+    @Override
+    public void updateTrangThai(int maNguoiDung, int maSuKien, String trangThai) throws Exception {
+        String sql = "UPDATE DangKy SET trang_thai = ? WHERE ma_nguoi_dung = ? AND ma_su_kien = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, trangThai);
+            ps.setInt(2, maNguoiDung);
+            ps.setInt(3, maSuKien);
+            ps.executeUpdate();
+        }
     }
 }

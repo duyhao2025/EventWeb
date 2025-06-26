@@ -16,6 +16,7 @@ import com.uef.service.DangKyService;
 import com.uef.service.DanhMucService;
 import com.uef.service.SuKienService;
 import com.uef.service.UserService;
+import com.uef.service.YeuThichService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -38,6 +39,8 @@ public class SuKienController {
     private final DateTimeFormatter DT_FMT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     @Autowired
     private DanhMucService danhMucService;
+    @Autowired
+    private YeuThichService yeuThichService;
 
     // Hiển thị form
     @GetMapping("/create")
@@ -231,13 +234,25 @@ public class SuKienController {
     }
 
     @GetMapping("/detail/{id}")
-    public String chiTietSuKien(@PathVariable("id") int id, Model model) {
+    public String chiTietSuKien(@PathVariable("id") int id,
+            Model model,
+            HttpSession session) {
         SuKien suKien = suKienService.findById(id);
         if (suKien == null) {
-            return "redirect:/demo"; // hoặc trả về 404.jsp
+            return "redirect:/demo"; // hoặc 404
         }
+
         model.addAttribute("event", suKien);
-        return "event/detail"; // trỏ tới /WEB-INF/views/event/detail.jsp
+
+        // Truyền thêm trạng thái yêu thích
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            boolean daYeuThich = yeuThichService.daYeuThichHienTai(user.getMaNguoiDung(), id);
+            model.addAttribute("user", user);
+            model.addAttribute("daYeuThich", daYeuThich);
+        }
+
+        return "event/detail";
     }
     @Autowired
     private DangKyService dangKyService;

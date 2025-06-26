@@ -85,6 +85,22 @@
                 <p><strong>Thời lượng:</strong> ${event.thoiLuongPhut} phút</p>
                 <p><strong>Số người tối đa:</strong> ${event.soNguoiToiDa}</p>
                 <p><strong>Địa chỉ:</strong> ${event.diaDiem}</p>
+                <c:if test="${not empty user}">
+                    <c:choose>
+                        <c:when test="${daYeuThich}">
+                            <form action="${pageContext.request.contextPath}/yeu-thich/bo" method="post">
+                                <input type="hidden" name="suKienId" value="${event.maSuKien}" />
+                                <button type="submit" class="btn btn-outline-secondary hover-btn">💔 Bỏ yêu thích</button>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <form action="${pageContext.request.contextPath}/yeu-thich/them" method="post">
+                                <input type="hidden" name="suKienId" value="${event.maSuKien}" />
+                                <button type="submit" class="btn btn-outline-danger hover-btn">❤️ Yêu thích</button>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
+                </c:if>
                 <!-- Nhúng Google Map dựa trên địa chỉ đã encode -->
                 <div style="width:100%; height:500px; border-radius:10px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin-top:10px;">
                     <iframe
