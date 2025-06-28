@@ -70,10 +70,12 @@ public class DangKyServiceImpl implements DangKyService {
 
     @Override
     public void huyDangKy(int maNguoiDung, int maSuKien) {
-        try {
-            dangKyDAO.updateTrangThai(maNguoiDung, maSuKien, "Đã hủy");
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi hủy đăng ký", e);
+        List<DangKy> regs = dangKyDAO.findByUserId(maNguoiDung);
+        for (DangKy dk : regs) {
+            if (dk.getMaSuKien() == maSuKien) {
+                capNhatTrangThai(dk.getMaDangKy(), "Đã hủy");
+                return;
+            }
         }
     }
 
@@ -104,6 +106,9 @@ public class DangKyServiceImpl implements DangKyService {
 
     @Override
     public void dangKySuKien(DangKy dangKy) {
+        if (dangKyDAO.existsByEmailAndSuKien(dangKy.getEmail(), dangKy.getMaSuKien())) {
+            throw new RuntimeException("Email này đã đăng ký sự kiện rồi.");
+        }
         dangKyDAO.save(dangKy);
     }
 
@@ -115,5 +120,14 @@ public class DangKyServiceImpl implements DangKyService {
     @Override
     public List<DangKy> getRegistrationsByUser(int maNguoiDung) {
         return dangKyDAO.findByUserId(maNguoiDung);
+    }
+
+    @Override
+    public void capNhatTrangThai(int maDangKy, String trangThai) {
+        try {
+            dangKyDAO.updateTrangThai(maDangKy, trangThai);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi cập nhật trạng thái", e);
+        }
     }
 }

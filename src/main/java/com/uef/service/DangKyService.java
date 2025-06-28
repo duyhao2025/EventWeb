@@ -25,4 +25,6 @@ public interface DangKyService {
     List<DangKy> layDanhSachDangKyTheoSuKien(int maSuKien);
 
     List<DangKy> getRegistrationsByUser(int maNguoiDung);
+
+    void capNhatTrangThai(int maDangKy, String trangThai);
 }

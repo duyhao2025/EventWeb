@@ -108,11 +108,25 @@
                             </a>
 
                             <!-- Đăng xuất -->
-                            <a class="btn btn-outline-primary btn-hover"
-                               href="${pageContext.request.contextPath}/logout">
-                                <fmt:message key="header.logout"/>
-                            </a>
+                            <!-- CHỈ HIỆN KHI CHƯA LOGIN -->
+                            <c:if test="${empty sessionScope.user}">
+                                <a class="btn btn-outline-success btn-hover"
+                                   href="${pageContext.request.contextPath}/login">
+                                    <fmt:message key="button.login"/>
+                                </a>
+                                <a class="btn btn-outline-info btn-hover"
+                                   href="${pageContext.request.contextPath}/register">
+                                    <fmt:message key="button.register"/>
+                                </a>
+                            </c:if>
 
+                            <!-- CHỈ HIỆN KHI ĐÃ LOGIN -->
+                            <c:if test="${not empty sessionScope.user}">
+                                <a class="btn btn-outline-danger btn-hover"
+                                   href="${pageContext.request.contextPath}/logout">
+                                    <fmt:message key="header.logout"/>
+                                </a>
+                            </c:if>
                             <!-- Trang chủ -->
                             <a class="btn btn-outline-primary btn-hover"
                                href="${pageContext.request.contextPath}/demo">

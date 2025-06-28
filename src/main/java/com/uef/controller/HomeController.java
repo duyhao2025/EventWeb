@@ -4,10 +4,17 @@
  */
 package com.uef.controller;
 
+import com.uef.model.SuKien;
+import com.uef.model.User;
+import com.uef.service.SuKienService;
+import com.uef.service.YeuThichService;
+import java.util.List;
+import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  *
@@ -16,16 +23,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-     @GetMapping({"/","/login"})
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "registered", required = false) String registered,
-            Model model) {
-        if (error != null) {
-            model.addAttribute("error", error);
+    @Autowired
+    private SuKienService suKienService;
+    @Autowired
+    private YeuThichService yeuThichService;
+
+    @GetMapping({"/","/demo"})
+    public String showDemo(HttpSession session, Model model) {
+        // Không còn kiểm tra session → ai cũng vào được demo
+        User u = (User) session.getAttribute("user");
+        model.addAttribute("user", u);
+
+        List<SuKien> event = suKienService.getAll();
+        model.addAttribute("suKienList", event);
+        if (u != null) {
+            List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(u.getMaNguoiDung());
+            List<Integer> idYeuThich = dsYeuThich.stream().map(SuKien::getMaSuKien).toList();
+            model.addAttribute("idYeuThichList", idYeuThich);
         }
-        if (registered != null) {
-            model.addAttribute("message", "Đăng ký thành công. Bạn có thể đăng nhập.");
-        }
-        return "user/login";
+        return "demo/index";
     }
+
 }

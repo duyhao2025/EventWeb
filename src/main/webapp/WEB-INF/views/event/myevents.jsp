@@ -68,6 +68,7 @@
             .myevents .card {
                 transition: transform .2s ease, box-shadow .2s ease;
             }
+
         </style>
     </head>
     <body>
@@ -133,6 +134,7 @@
                 </div>
             </div>
         </div>
+        
     </body>
 </html>
 <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>

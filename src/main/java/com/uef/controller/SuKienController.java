@@ -8,7 +8,6 @@ package com.uef.controller;
  *
  * @author Admin
  */
-import com.uef.model.DangKy;
 import com.uef.model.DanhMuc;
 import com.uef.model.SuKien;
 import com.uef.model.User;
@@ -20,6 +19,7 @@ import com.uef.service.YeuThichService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,4 +257,17 @@ public class SuKienController {
     @Autowired
     private DangKyService dangKyService;
 
+    @PostMapping("/manager/updateStatus")
+    @ResponseBody
+    public Map<String, Object> updateStatus(
+            @RequestParam("maDangKy") int maDangKy,
+            @RequestParam("trangThai") String trangThai) {
+        try {
+            dangKyService.capNhatTrangThai(maDangKy, trangThai);
+            return Map.of("success", true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Map.of("success", false);
+        }
+    }
 }

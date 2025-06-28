@@ -42,7 +42,12 @@
                 margin: 50px auto;
                 padding: 0 24px;
             }
-
+            .event-image {
+                width: 100%;
+                max-height: 66vh;
+                object-fit: cover;
+                border-radius: 12px;
+            }
             .tabs {
                 display: flex;
                 margin-bottom: 20px;
@@ -149,12 +154,6 @@
 
                     <label>Số điện thoại</label>
                     <input type="text" name="soDienThoai" value="${user.soDienThoai}" readonly />
-
-                    <label>Ngôn ngữ</label>
-                    <select name="ngonNgu" disabled>
-                        <option value="vi" ${user.ngonNgu == 'vi' ? 'selected' : ''}>Tiếng Việt</option>
-                        <option value="en" ${user.ngonNgu == 'en' ? 'selected' : ''}>English</option>
-                    </select>
 
                     <button type="button" id="editBtn">Sửa thông tin cá nhân</button>
                     <button type="submit" id="saveBtn" style="display:none; margin-top: 12px;">Cập nhật</button>

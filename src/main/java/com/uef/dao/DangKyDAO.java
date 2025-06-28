@@ -19,5 +19,7 @@ public interface DangKyDAO {
 
     List<DangKy> findByUserId(int maNguoiDung);
 
-    void updateTrangThai(int maNguoiDung, int maSuKien, String trangThai) throws Exception;
+    void updateTrangThai(int maDangKy, String trangThai);
+
+    boolean existsByEmailAndSuKien(String email, int maSuKien);
 }

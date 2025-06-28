@@ -41,20 +41,17 @@ public class UserController {
     private YeuThichService yeuThichService;
 
     // GET: Hiển thị form đăng nhập
-    @GetMapping("/demo")
-    public String showDemo(HttpSession session, Model model) {
-        // Không còn kiểm tra session → ai cũng vào được demo
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("user", u);
-
-        List<SuKien> event = suKienService.getAll();
-        model.addAttribute("suKienList", event);
-        if (u != null) {
-            List<SuKien> dsYeuThich = yeuThichService.layDanhSachYeuThich(u.getMaNguoiDung());
-            List<Integer> idYeuThich = dsYeuThich.stream().map(SuKien::getMaSuKien).toList();
-            model.addAttribute("idYeuThichList", idYeuThich);
+    @GetMapping("/login")
+    public String showLoginForm(@RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "registered", required = false) String registered,
+            Model model) {
+        if (error != null) {
+            model.addAttribute("error", error);
         }
-        return "demo/index";
+        if (registered != null) {
+            model.addAttribute("message", "Đăng ký thành công. Bạn có thể đăng nhập.");
+        }
+        return "user/login";
     }
 
     // POST: Xử lý đăng nhập

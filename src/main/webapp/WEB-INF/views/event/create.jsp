@@ -23,9 +23,9 @@
                     <!-- Cột trái -->
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="imageFile" class="form-label">Hình ảnh sự kiện</label>
+                            <label for="imageFile" class="form-label">Hình ảnh sự kiện : ( Lưu ý: Ảnh dưới dạng .jpg*)</label>
                             <input type="file" class="form-control" id="imageFile" name="imageFile" />
-                        </div>
+                        </div> 
                         <div class="mb-3">
                             <label for="title" class="form-label">Tên sự kiện</label>
                             <input type="text" class="form-control" id="tieuDe" name="tieuDe" placeholder="Nhập tên sự kiện" required>

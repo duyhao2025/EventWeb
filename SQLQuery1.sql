@@ -120,3 +120,7 @@ ALTER TABLE YeuThich
   ADD da_an BIT     -- hoặc TINYINT
     NOT NULL 
     DEFAULT 0;
+
+
+ ALTER TABLE DangKy
+ADD CONSTRAINT UQ_DangKy_Email_SuKien UNIQUE (email, ma_su_kien);
